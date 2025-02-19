@@ -4,27 +4,47 @@ using UnityEngine.UI;
 
 public class HomeMenu : MonoBehaviour
 {
-    [SerializeField]
-    private Screens[] screens;
+    public static HomeMenu instance;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    public Screens[] screens;
 
     [System.Serializable]
     public class Screens
     {
-        public GameObject rectTransform;
+        public RectTransform rectTransform;
+        public ButtonCollection buttonCollection;
+        public int ShowPosY;
+        public int RestPosY;
         public Button firstButton;
     }
 
-    public void LoadStartScreen()
+    public void LoadScreen(int partOfScreen, int requestedScreen)
     {
+        // Debug.Log("loadscreen");
+        Screens calledScreen = screens[requestedScreen];
+        if (calledScreen.rectTransform.position.y != calledScreen.ShowPosY)
+        {
+            calledScreen.buttonCollection.InteractableToggle();
+            calledScreen.rectTransform.transform.DOLocalMoveY(calledScreen.ShowPosY, 0.75f);
+            calledScreen.firstButton.Select();
+        }
+        Debug.Log(calledScreen.rectTransform.name);
+
+        Screens screen = screens[partOfScreen];
+        if (screen.rectTransform.position.y != screen.RestPosY)
+        {
+            screen.buttonCollection.InteractableToggle();
+            screen.rectTransform.transform.DOLocalMoveY(screen.RestPosY, 0.75f);
+        }
 
     }
-
-    public void LoadLevelScreen()
-    {
-
-    }
-
-
 }
 
 

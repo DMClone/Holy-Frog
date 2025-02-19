@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    static LevelManager instance;
+    public static LevelManager instance;
 
     public int levelsUnlocked;
     public int levelInt;
