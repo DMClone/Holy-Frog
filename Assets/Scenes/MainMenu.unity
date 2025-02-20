@@ -974,6 +974,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207271e6a51883342a27e78b3c694d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ue_sceneReset:
+    m_PersistentCalls:
+      m_Calls: []
   levelsUnlocked: 0
   levelInt: 2
 --- !u!1 &482581806
@@ -1687,7 +1690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 324901302}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &1606948527
