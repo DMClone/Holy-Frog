@@ -11,12 +11,12 @@ public class InLevelButton : MonoBehaviour
 
     public void Pause()
     {
-
+        LevelManager.instance.PauseLevel();
     }
 
     public void Unpause()
     {
-
+        LevelManager.instance.UnpauseLevel();
     }
 
     public void RequestToLoadLevel()
@@ -26,8 +26,7 @@ public class InLevelButton : MonoBehaviour
 
     public void RequestToLoadHome()
     {
-        Debug.Log("Hello from InLevelButton");
-        LevelManager.instance.ToHomeMenu();
+        LevelManager.instance.ToHome();
     }
 
     private int GetLevelIndex()

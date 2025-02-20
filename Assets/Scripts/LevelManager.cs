@@ -9,6 +9,8 @@ public class LevelManager : MonoBehaviour
 
     public UnityEvent ue_sceneReset;
 
+    [SerializeField] private GameObject canvas;
+
     public int levelsUnlocked;
     public int levelInt;
 
@@ -23,15 +25,23 @@ public class LevelManager : MonoBehaviour
             levelsUnlocked = PlayerPrefs.GetInt("LevelsUnlocked");
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += GetCanvas;
+    }
+
+    private void GetCanvas(Scene scene, LoadSceneMode mode)
+    {
+        canvas = CanvasInstance.instance.gameObject;
+    }
 
     public void LoadLevel(int level)
     {
         SceneManager.LoadScene("Scenes/Levels/Level" + level);
     }
 
-    public void ToHomeMenu()
+    public void ToHome()
     {
-        Debug.Log("Hello from LevelManager");
         SceneManager.LoadScene("Scenes/MainMenu");
     }
 
@@ -40,9 +50,10 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 0;
     }
 
-    public void ResumeLevel()
+    public void UnpauseLevel()
     {
         Time.timeScale = 1;
+        canvas.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     public void RestartLevel()
