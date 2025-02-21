@@ -1,11 +1,16 @@
 using System;
 using System.Threading;
 using DG.Tweening.Plugins.Options;
+using Unity.Android.Gradle;
+using Unity.Mathematics;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
+using UnityEngine.Splines.Interpolators;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,12 +32,12 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        // TEMP
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         if (instance == null)
             instance = this;
-
 
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
@@ -54,36 +59,35 @@ public class PlayerController : MonoBehaviour
 
     private void Look(InputAction.CallbackContext context)
     {
-        Debug.Log("Hi");
         lookDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
     }
 
-    private void JumpCharge(InputAction.CallbackContext context)
+    private void JumpCharge(InputAction.CallbackContext context) // Holding down jump button
     {
-        Debug.Log("Charging jump");
         _isJumpCancelled = false;
         // _jumpsLeft = _maxJumps;
     }
 
-    private void Jump(InputAction.CallbackContext context)
+    private void Jump(InputAction.CallbackContext context) // Released jump button when charging jump
     {
         if (_jumpsLeft != 0 && _isJumpCancelled == false)
         {
-            _rigidbody.AddRelativeForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
+            transform.forward = new Vector3(lookDir.x, 0, lookDir.z);
+            _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
         }
     }
 
-    private void JumpCancel(InputAction.CallbackContext context)
+    private void JumpCancel(InputAction.CallbackContext context) // Waited too long to jump
     {
-        Debug.Log("Nevermind I don't wanna jump");
         _isJumpCancelled = true;
         _jumpCharge = 0;
     }
 
     void Update()
     {
+        // Charge the jump if the jump button is being held
         if (InputSystem.actions.FindAction("Jump").phase == InputActionPhase.Started && _jumpCharge < 1)
         {
             _jumpCharge += 1 * Time.deltaTime;
@@ -96,4 +100,24 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody.AddForce(new Vector3(0, -1f, 0) * _rigidbody.mass * 30);
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        RaycastHit[] hit = Physics.BoxCastAll(transform.position, GetComponent<Collider>().bounds.size, Vector3.down, quaternion.identity, 1f);
+        if (hit.Length > 0)
+        {
+            for (int i = 0; i < hit.Length; i++)
+            {
+                if (hit[i].transform.CompareTag("Ground"))
+                {
+                    Debug.Log("Jumps reset");
+                    _jumpsLeft = _maxJumps;
+                    break;
+                }
+            }
+        }
+    }
+
+
+
 }
