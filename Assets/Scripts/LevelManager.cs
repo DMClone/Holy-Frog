@@ -32,7 +32,7 @@ public class LevelManager : MonoBehaviour
 
     private void GetCanvas(Scene scene, LoadSceneMode mode)
     {
-        canvas = CanvasInstance.instance.gameObject;
+        canvas = LevelCanvas.instance.gameObject;
     }
 
     public void LoadLevel(int level)
@@ -43,21 +43,5 @@ public class LevelManager : MonoBehaviour
     public void ToHome()
     {
         SceneManager.LoadScene("Scenes/MainMenu");
-    }
-
-    public void PauseLevel()
-    {
-        Time.timeScale = 0;
-    }
-
-    public void UnpauseLevel()
-    {
-        Time.timeScale = 1;
-        canvas.transform.GetChild(0).gameObject.SetActive(false);
-    }
-
-    public void RestartLevel()
-    {
-        ue_sceneReset.Invoke();
     }
 }

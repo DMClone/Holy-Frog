@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Threading;
 using DG.Tweening.Plugins.Options;
 using Unity.Android.Gradle;
+using Unity.Cinemachine;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -19,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private PlayerInput _playerInput;
     private Rigidbody _rigidbody;
 
-    private Vector3 lookDir;
+    public Vector3 lookDir;
     [SerializeField] private int _maxJumps;
     [SerializeField] private int _jumpsLeft;
     private bool _isJumpCancelled;
@@ -32,10 +34,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        // TEMP
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         if (instance == null)
             instance = this;
 
@@ -51,6 +49,8 @@ public class PlayerController : MonoBehaviour
         _playerJump.started += JumpCharge;
         _playerJump.canceled += Jump;
         _playerJump.performed += JumpCancel;
+        InputAction _playerToggleUI = InputSystem.actions.FindAction("TogglePause");
+        _playerToggleUI.performed += Pause;
         #endregion
 
         _jumpsLeft = _maxJumps;
@@ -59,23 +59,24 @@ public class PlayerController : MonoBehaviour
 
     private void Look(InputAction.CallbackContext context)
     {
-        lookDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
+        // 
     }
 
     private void JumpCharge(InputAction.CallbackContext context) // Holding down jump button
     {
         _isJumpCancelled = false;
-        // _jumpsLeft = _maxJumps;
     }
 
     private void Jump(InputAction.CallbackContext context) // Released jump button when charging jump
     {
         if (_jumpsLeft != 0 && _isJumpCancelled == false)
         {
-            transform.forward = new Vector3(lookDir.x, 0, lookDir.z);
+            lookDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
+            // lookDir = transform.GetChild(2).GetComponent<CinemachineOrbitalFollow>().HorizontalAxis;
             _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
+            _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
         }
     }
 
@@ -83,6 +84,11 @@ public class PlayerController : MonoBehaviour
     {
         _isJumpCancelled = true;
         _jumpCharge = 0;
+    }
+
+    private void Pause(InputAction.CallbackContext context)
+    {
+        GameManager.instance.PauseToggle();
     }
 
     void Update()
@@ -94,6 +100,9 @@ public class PlayerController : MonoBehaviour
             if (_jumpCharge > 1)
                 _jumpCharge = 1;
         }
+        Debug.Log("lookDir = " + lookDir);
+        Vector3 testDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
+        Debug.Log("testDir = " + testDir);
     }
 
     void FixedUpdate()
@@ -110,7 +119,6 @@ public class PlayerController : MonoBehaviour
             {
                 if (hit[i].transform.CompareTag("Ground"))
                 {
-                    Debug.Log("Jumps reset");
                     _jumpsLeft = _maxJumps;
                     break;
                 }

@@ -9,16 +9,6 @@ public class InLevelButton : MonoBehaviour
         _nextLevel = GetLevelIndex();
     }
 
-    public void Pause()
-    {
-        LevelManager.instance.PauseLevel();
-    }
-
-    public void Unpause()
-    {
-        LevelManager.instance.UnpauseLevel();
-    }
-
     public void RequestToLoadLevel()
     {
         LevelManager.instance.LoadLevel(_nextLevel);
@@ -27,6 +17,11 @@ public class InLevelButton : MonoBehaviour
     public void RequestToLoadHome()
     {
         LevelManager.instance.ToHome();
+    }
+
+    public void PauseToggle()
+    {
+        GameManager.instance.PauseToggle();
     }
 
     private int GetLevelIndex()
