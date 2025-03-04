@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput _playerInput;
     private Rigidbody _rigidbody;
+    private Animator _animator;
 
     public Vector3 lookDir;
     [SerializeField] private int _maxJumps;
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
 
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
+        _animator = transform.GetChild(0).GetComponent<Animator>();
 
         #region Inputs
         InputAction _playerAim = InputSystem.actions.FindAction("Aim");
@@ -77,6 +79,7 @@ public class PlayerController : MonoBehaviour
             _jumpsLeft -= 1;
             _jumpCharge = 0;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
+            _animator.Play("Jump");
         }
     }
 
@@ -100,9 +103,6 @@ public class PlayerController : MonoBehaviour
             if (_jumpCharge > 1)
                 _jumpCharge = 1;
         }
-        Debug.Log("lookDir = " + lookDir);
-        Vector3 testDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
-        Debug.Log("testDir = " + testDir);
     }
 
     void FixedUpdate()
@@ -120,6 +120,7 @@ public class PlayerController : MonoBehaviour
                 if (hit[i].transform.CompareTag("Ground"))
                 {
                     _jumpsLeft = _maxJumps;
+                    _animator.Play("FrogLand");
                     break;
                 }
             }
