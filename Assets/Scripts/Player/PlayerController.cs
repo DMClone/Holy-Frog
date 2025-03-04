@@ -32,7 +32,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Range(0, 20)] private int _jumpHeight;
     [SerializeField][Range(0, 20)] private int _jumpForce;
 
-
     private void Awake()
     {
         if (instance == null)
@@ -56,7 +55,6 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         _jumpsLeft = _maxJumps;
-
     }
 
     private void Look(InputAction.CallbackContext context)
@@ -126,7 +124,4 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-
-
 }

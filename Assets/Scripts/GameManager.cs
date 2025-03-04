@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
             ShowCursor();
             Time.timeScale = 0;
             _canvas.transform.GetChild(0).gameObject.SetActive(true);
+            _canvas.transform.GetChild(0).GetChild(1).GetComponent<Button>().interactable = true;
         }
     }
 
@@ -56,5 +58,7 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         ue_sceneReset.Invoke();
+        _canvas.transform.GetChild(0).GetChild(1).GetComponent<Button>().interactable = false;
+        _canvas.transform.GetChild(0).GetChild(0).GetComponent<Button>().Select();
     }
 }

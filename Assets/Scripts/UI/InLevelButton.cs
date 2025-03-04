@@ -24,6 +24,11 @@ public class InLevelButton : MonoBehaviour
         GameManager.instance.PauseToggle();
     }
 
+    public void RestartLevel()
+    {
+        GameManager.instance.RestartLevel();
+    }
+
     private int GetLevelIndex()
     {
         int levelIndex = SceneManager.GetActiveScene().name.IndexOf("Level");
