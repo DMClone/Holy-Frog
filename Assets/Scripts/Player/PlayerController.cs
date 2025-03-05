@@ -18,25 +18,28 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
 
+    private GameManager _gameManager;
     private PlayerInput _playerInput;
     private Rigidbody _rigidbody;
     private Animator _animator;
 
     public Vector3 lookDir;
+    private Vector3 _lastVelocity;
     [SerializeField] private int _maxJumps;
     [SerializeField] private int _jumpsLeft;
     private bool _isJumpCancelled;
     private bool _isGrounded;
     float _jumpCharge;
 
-    [SerializeField][Range(0, 20)] private int _jumpHeight;
-    [SerializeField][Range(0, 20)] private int _jumpForce;
+    [SerializeField][Range(0, 200)] private int _jumpHeight;
+    [SerializeField][Range(0, 200)] private int _jumpForce;
 
     private void Awake()
     {
         if (instance == null)
             instance = this;
 
+        _gameManager = GameManager.instance;
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = transform.GetChild(0).GetComponent<Animator>();
@@ -72,13 +75,12 @@ public class PlayerController : MonoBehaviour
         if (_jumpsLeft != 0 && _isJumpCancelled == false)
         {
             lookDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
-            // lookDir = transform.GetChild(2).GetComponent<CinemachineOrbitalFollow>().HorizontalAxis;
             _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
-            _isGrounded = false;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
             _animator.Play("Jump");
+            StartCoroutine(BugCheck());
         }
     }
 
@@ -90,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
     private void Pause(InputAction.CallbackContext context)
     {
-        GameManager.instance.PauseToggle();
+        GameManager.instance.PauseToggle(PauseSetting.toggle);
     }
 
     void Update()
@@ -106,7 +108,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        _rigidbody.AddForce(new Vector3(0, -1f, 0) * _rigidbody.mass * 30);
+        if (!_isGrounded)
+            _rigidbody.AddForce(new Vector3(0, -1f, 0) * _rigidbody.mass * 30);
+
+        _lastVelocity = _rigidbody.linearVelocity;
+
+        Debug.Log(_rigidbody.linearVelocity.magnitude);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -120,13 +127,36 @@ public class PlayerController : MonoBehaviour
                 {
                     if (hit[i].transform.CompareTag("Ground"))
                     {
-                        _jumpsLeft = _maxJumps;
-                        _isGrounded = true;
-                        _animator.Play("FrogLand");
+                        Land();
                         break;
                     }
                 }
             }
         }
+    }
+
+    // Check if we haven't left the ground, but expended a jump. If both true: 
+    // we determine that we are stuck and should be reset back to being on the ground properly
+    IEnumerator BugCheck()
+    {
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        if (_jumpsLeft != _maxJumps && _isGrounded == true)
+        {
+            Land();
+        }
+    }
+
+    void Land()
+    {
+        _jumpsLeft = _maxJumps;
+        _isGrounded = true;
+        _rigidbody.linearVelocity = new Vector3(_lastVelocity.x, 0, _lastVelocity.z) / 2;
+        _animator.Play("FrogLand");
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        _isGrounded = false;
     }
 }

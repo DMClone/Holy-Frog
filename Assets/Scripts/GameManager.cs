@@ -2,13 +2,20 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+public enum PauseSetting
+{
+    pause,
+    resume,
+    toggle
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
     public UnityEvent ue_sceneReset;
 
-    [SerializeField] private GameObject _canvas;
+    private GameObject _pauseScreen;
 
     private bool _isGamePaused = true;
 
@@ -22,25 +29,26 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        _canvas = LevelCanvas.instance.gameObject;
+        GameObject canvas = LevelCanvas.instance.gameObject;
+        _pauseScreen = canvas.transform.GetChild(0).gameObject;
     }
 
-    public void PauseToggle()
+    public void PauseToggle(PauseSetting pauseGame)
     {
-        if (_isGamePaused)
+        if (_isGamePaused && (pauseGame == PauseSetting.resume || pauseGame == PauseSetting.toggle))
         {
             _isGamePaused = false;
             HideCursor();
             Time.timeScale = 1;
-            _canvas.transform.GetChild(0).gameObject.SetActive(false);
+            _pauseScreen.gameObject.SetActive(false);
         }
-        else
+        else if (pauseGame == PauseSetting.pause || pauseGame == PauseSetting.toggle)
         {
             _isGamePaused = true;
             ShowCursor();
             Time.timeScale = 0;
-            _canvas.transform.GetChild(0).gameObject.SetActive(true);
-            _canvas.transform.GetChild(0).GetChild(1).GetComponent<Button>().interactable = true;
+            _pauseScreen.SetActive(true);
+            _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = true;
         }
     }
 
@@ -59,7 +67,7 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         ue_sceneReset.Invoke();
-        _canvas.transform.GetChild(0).GetChild(1).GetComponent<Button>().interactable = false;
-        _canvas.transform.GetChild(0).GetChild(0).GetComponent<Button>().Select();
+        _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
+        _pauseScreen.transform.GetChild(0).GetComponent<Button>().Select();
     }
 }

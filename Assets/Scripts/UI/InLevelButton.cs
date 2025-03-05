@@ -21,7 +21,7 @@ public class InLevelButton : MonoBehaviour
 
     public void PauseToggle()
     {
-        GameManager.instance.PauseToggle();
+        GameManager.instance.PauseToggle(PauseSetting.resume);
     }
 
     public void RestartLevel()
