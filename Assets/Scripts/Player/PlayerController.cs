@@ -76,6 +76,7 @@ public class PlayerController : MonoBehaviour
             _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
+            _isGrounded = false;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
             _animator.Play("Jump");
         }
@@ -110,16 +111,20 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        RaycastHit[] hit = Physics.BoxCastAll(transform.position, GetComponent<Collider>().bounds.size, Vector3.down, quaternion.identity, 1f);
-        if (hit.Length > 0)
+        if (!_isGrounded)
         {
-            for (int i = 0; i < hit.Length; i++)
+            RaycastHit[] hit = Physics.BoxCastAll(transform.position, GetComponent<Collider>().bounds.size, Vector3.down, quaternion.identity, 1f);
+            if (hit.Length > 0)
             {
-                if (hit[i].transform.CompareTag("Ground"))
+                for (int i = 0; i < hit.Length; i++)
                 {
-                    _jumpsLeft = _maxJumps;
-                    _animator.Play("FrogLand");
-                    break;
+                    if (hit[i].transform.CompareTag("Ground"))
+                    {
+                        _jumpsLeft = _maxJumps;
+                        _isGrounded = true;
+                        _animator.Play("FrogLand");
+                        break;
+                    }
                 }
             }
         }

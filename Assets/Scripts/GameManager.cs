@@ -10,13 +10,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject _canvas;
 
-    private bool _isGamePaused;
+    private bool _isGamePaused = true;
 
     private void Awake()
     {
         if (instance == null)
             instance = this;
         HideCursor();
+        Time.timeScale = 0;
     }
 
     void Start()
