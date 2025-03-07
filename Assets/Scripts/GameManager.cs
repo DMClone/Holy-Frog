@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         {
             _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
         }
-        else if (pauseGame == PauseSetting.pause)
+        else if (pauseGame == PauseSetting.toggle)
         {
             _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = true;
         }
