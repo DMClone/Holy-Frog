@@ -55,6 +55,8 @@ public class PlayerController : MonoBehaviour
         _playerJump.started += JumpCharge;
         _playerJump.canceled += Jump;
         _playerJump.performed += JumpCancel;
+        InputAction _playerGrip = InputSystem.actions.FindAction("Grip");
+        _playerGrip.started += GripOnGround;
         InputAction _playerToggleUI = InputSystem.actions.FindAction("TogglePause");
         _playerToggleUI.performed += Pause;
         InputAction _playerRestart = InputSystem.actions.FindAction("Restart");
@@ -94,6 +96,12 @@ public class PlayerController : MonoBehaviour
         _jumpCharge = 0;
     }
 
+    private void GripOnGround(InputAction.CallbackContext context)
+    {
+        if (_isGrounded && _rigidbody.linearVelocity != Vector3.zero)
+            _rigidbody.linearVelocity = Vector3.zero;
+    }
+
     private void Pause(InputAction.CallbackContext context)
     {
         GameManager.instance.PauseToggle(PauseSetting.toggle, true);
@@ -122,8 +130,6 @@ public class PlayerController : MonoBehaviour
             _rigidbody.AddForce(new Vector3(0, -1f, 0) * _rigidbody.mass * 30);
 
         _lastVelocity = _rigidbody.linearVelocity;
-
-        Debug.Log(_rigidbody.linearVelocity.magnitude);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -161,7 +167,10 @@ public class PlayerController : MonoBehaviour
     {
         _jumpsLeft = _maxJumps;
         _isGrounded = true;
-        _rigidbody.linearVelocity = new Vector3(_lastVelocity.x, 0, _lastVelocity.z) / 2;
+        if (InputSystem.actions.FindAction("Grip").phase != InputActionPhase.Waiting)
+            _rigidbody.linearVelocity = Vector3.zero;
+        else
+            _rigidbody.linearVelocity = new Vector3(_lastVelocity.x, 0, _lastVelocity.z) / 2;
         _animator.Play("FrogLand");
     }
 

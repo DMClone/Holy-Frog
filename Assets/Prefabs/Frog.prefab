@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 7154717234923704231}
   - component: {fileID: 6023792926685515599}
   - component: {fileID: 7903321120179914122}
-  - component: {fileID: 9176543563531414227}
+  - component: {fileID: 7291283743300031687}
   - component: {fileID: 8536828718461498861}
   - component: {fileID: 8801663716917104225}
   - component: {fileID: 6828575193714479517}
+  - component: {fileID: 8016862404657926084}
   m_Layer: 0
   m_Name: FreeLook Camera
   m_TagString: Untagged
@@ -30,8 +31,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1523972064763378687}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19757004, y: -0.0000000044476005, z: 1.0976653e-11, w: 0.9802888}
-  m_LocalPosition: {x: 0, y: 4.007058, z: -9.537169}
+  m_LocalRotation: {x: 0.13448429, y: 0.6707601, z: -0.12554985, w: 0.718493}
+  m_LocalPosition: {x: -9.596928, y: 3.7318563, z: -0.66025543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -114,7 +115,7 @@ MonoBehaviour:
     SplineCurvature: 0.5
   RecenteringTarget: 3
   HorizontalAxis:
-    Value: 0
+    Value: 86.06434
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -124,7 +125,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 17.5
+    Value: 15.853917
     Center: 17.5
     Range: {x: 2.5, y: 45}
     Wrap: 0
@@ -143,7 +144,7 @@ MonoBehaviour:
       Wait: 1
       Time: 2
     Restrictions: 0
---- !u!114 &9176543563531414227
+--- !u!114 &7291283743300031687
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,26 +153,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1523972064763378687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f38bda98361e1de48a4ca2bd86ea3c17, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Composition:
-    ScreenPosition: {x: 0, y: 0}
-    DeadZone:
-      Enabled: 0
-      Size: {x: 0.2, y: 0.2}
-    HardLimits:
-      Enabled: 0
-      Size: {x: 0.8, y: 0.8}
-      Offset: {x: 0, y: 0}
-  CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 0, y: 0}
-  Lookahead:
-    Enabled: 0
-    Time: 0
-    Smoothing: 0
-    IgnoreY: 0
+  LookAtOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &8536828718461498861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,7 +212,7 @@ MonoBehaviour:
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
-      InputValue: 0
+      InputValue: -0
       Driver:
         AccelTime: 0.2
         DecelTime: 0.2
@@ -240,7 +225,7 @@ MonoBehaviour:
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
-      InputValue: 0
+      InputValue: -0
       Driver:
         AccelTime: 0
         DecelTime: 0
@@ -276,6 +261,35 @@ MonoBehaviour:
       m_Bits: 1
     MaximumRaycast: 10
     Damping: 0.5
+--- !u!114 &8016862404657926084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523972064763378687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f38bda98361e1de48a4ca2bd86ea3c17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Composition:
+    ScreenPosition: {x: 0, y: 0}
+    DeadZone:
+      Enabled: 0
+      Size: {x: 0.2, y: 0.2}
+    HardLimits:
+      Enabled: 0
+      Size: {x: 0.8, y: 0.8}
+      Offset: {x: 0, y: 0}
+  CenterOnActivate: 1
+  TargetOffset: {x: 0, y: 0, z: 0}
+  Damping: {x: 0.5, y: 0.5}
+  Lookahead:
+    Enabled: 0
+    Time: 0
+    Smoothing: 0
+    IgnoreY: 0
 --- !u!1 &7128281870941481291
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,8 +318,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7128281870941481291}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19757003, y: -0.0000000046336024, z: 9.338688e-10, w: 0.9802888}
-  m_LocalPosition: {x: 0, y: 4.007058, z: -9.537169}
+  m_LocalRotation: {x: 0.13451105, y: 0.6707554, z: -0.12557484, w: 0.71848804}
+  m_LocalPosition: {x: -9.596928, y: 3.7318563, z: -0.66025543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
