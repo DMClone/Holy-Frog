@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
 
     private GameManager _gameManager;
+    private GameObject _camera;
     private PlayerInput _playerInput;
     private Rigidbody _rigidbody;
     private Animator _animator;
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
             instance = this;
 
         _gameManager = GameManager.instance;
+        _camera = transform.GetChild(1).gameObject;
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = transform.GetChild(0).GetComponent<Animator>();
@@ -55,6 +57,8 @@ public class PlayerController : MonoBehaviour
         _playerJump.performed += JumpCancel;
         InputAction _playerToggleUI = InputSystem.actions.FindAction("TogglePause");
         _playerToggleUI.performed += Pause;
+        InputAction _playerRestart = InputSystem.actions.FindAction("Restart");
+        _playerRestart.performed += Restart;
         #endregion
 
         _jumpsLeft = _maxJumps;
@@ -74,7 +78,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_jumpsLeft != 0 && _isJumpCancelled == false)
         {
-            lookDir = (transform.position - new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z)).normalized;
+            lookDir = (transform.position - new Vector3(_camera.transform.position.x, transform.position.y, _camera.transform.position.z)).normalized;
             _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
@@ -92,7 +96,13 @@ public class PlayerController : MonoBehaviour
 
     private void Pause(InputAction.CallbackContext context)
     {
-        GameManager.instance.PauseToggle(PauseSetting.toggle);
+        GameManager.instance.PauseToggle(PauseSetting.toggle, true);
+    }
+
+    private void Restart(InputAction.CallbackContext context)
+    {
+        _gameManager.RestartLevel();
+        _gameManager.PauseToggle(PauseSetting.pause, false);
     }
 
     void Update()

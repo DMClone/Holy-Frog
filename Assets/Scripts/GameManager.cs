@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         _pauseScreen = canvas.transform.GetChild(0).gameObject;
     }
 
-    public void PauseToggle(PauseSetting pauseGame)
+    public void PauseToggle(PauseSetting pauseGame, bool enableRestartButton)
     {
         if (_isGamePaused && (pauseGame == PauseSetting.resume || pauseGame == PauseSetting.toggle))
         {
@@ -48,6 +48,14 @@ public class GameManager : MonoBehaviour
             ShowCursor();
             Time.timeScale = 0;
             _pauseScreen.SetActive(true);
+        }
+
+        if (!enableRestartButton)
+        {
+            _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
+        }
+        else if (pauseGame == PauseSetting.pause)
+        {
             _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = true;
         }
     }

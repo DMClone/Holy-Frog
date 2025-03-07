@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EntitySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject _gameObjectToSpawn;
+    public GameObject _gameObjectToSpawn;
     private GameObject _child;
     private void Awake()
     {
