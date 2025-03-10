@@ -1,29 +1,29 @@
 using System;
 using System.Collections;
 using System.Threading;
+using DG.Tweening;
 using DG.Tweening.Plugins.Options;
-using Unity.Android.Gradle;
 using Unity.Cinemachine;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
-using UnityEngine.Splines.Interpolators;
 
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
 
     private GameManager _gameManager;
-    private GameObject _camera;
+    private GameObject _cinemachineCamera;
     private PlayerInput _playerInput;
     private Rigidbody _rigidbody;
     private Animator _animator;
 
+    private Vector3 _startingPos;
+    private Vector3 _startingRot;
     public Vector3 lookDir;
     private Vector3 _lastVelocity;
     [SerializeField] private int _maxJumps;
@@ -40,11 +40,17 @@ public class PlayerController : MonoBehaviour
         if (instance == null)
             instance = this;
 
+        GameManager.instance.ue_sceneReset.AddListener(OnReset);
+
         _gameManager = GameManager.instance;
-        _camera = transform.GetChild(1).gameObject;
+        _cinemachineCamera = transform.GetChild(2).gameObject;
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = transform.GetChild(0).GetComponent<Animator>();
+
+        _startingPos = transform.position;
+        _startingRot = transform.eulerAngles;
+        _jumpsLeft = _maxJumps;
 
         #region Inputs
         InputAction _playerAim = InputSystem.actions.FindAction("Aim");
@@ -62,8 +68,22 @@ public class PlayerController : MonoBehaviour
         InputAction _playerRestart = InputSystem.actions.FindAction("Restart");
         _playerRestart.performed += Restart;
         #endregion
+    }
 
-        _jumpsLeft = _maxJumps;
+    private void OnReset()
+    {
+        transform.position = _startingPos;
+        transform.eulerAngles = _startingRot;
+        _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().HorizontalAxis.Value = transform.eulerAngles.y;
+        _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().VerticalAxis.Value = 10;
+        _rigidbody.linearVelocity = Vector3.zero;
+        _cinemachineCamera.GetComponent<CinemachineInputAxisController>();
+        _animator.Play("Idle");
+    }
+
+    private void Start()
+    {
+        _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().HorizontalAxis.Value = transform.eulerAngles.y;
     }
 
     private void Look(InputAction.CallbackContext context)
@@ -78,9 +98,9 @@ public class PlayerController : MonoBehaviour
 
     private void Jump(InputAction.CallbackContext context) // Released jump button when charging jump
     {
-        if (_jumpsLeft != 0 && _isJumpCancelled == false)
+        if (_jumpsLeft != 0 && _isJumpCancelled == false && !_gameManager.isGamePaused)
         {
-            lookDir = (transform.position - new Vector3(_camera.transform.position.x, transform.position.y, _camera.transform.position.z)).normalized;
+            lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
             _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
@@ -88,6 +108,8 @@ public class PlayerController : MonoBehaviour
             _animator.Play("Jump");
             StartCoroutine(BugCheck());
         }
+        else
+            _isJumpCancelled = true;
     }
 
     private void JumpCancel(InputAction.CallbackContext context) // Waited too long to jump
@@ -116,7 +138,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // Charge the jump if the jump button is being held
-        if (InputSystem.actions.FindAction("Jump").phase == InputActionPhase.Started && _jumpCharge < 1)
+        if (InputSystem.actions.FindAction("Jump").phase == InputActionPhase.Started && _jumpCharge < 1 && !_gameManager.isGamePaused)
         {
             _jumpCharge += 1 * Time.deltaTime;
             if (_jumpCharge > 1)

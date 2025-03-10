@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     private GameObject _pauseScreen;
 
-    private bool _isGamePaused = true;
+    public bool isGamePaused = true;
 
     private void Awake()
     {
@@ -35,16 +35,16 @@ public class GameManager : MonoBehaviour
 
     public void PauseToggle(PauseSetting pauseGame, bool enableRestartButton)
     {
-        if (_isGamePaused && (pauseGame == PauseSetting.resume || pauseGame == PauseSetting.toggle))
+        if (isGamePaused && (pauseGame == PauseSetting.resume || pauseGame == PauseSetting.toggle))
         {
-            _isGamePaused = false;
+            isGamePaused = false;
             HideCursor();
             Time.timeScale = 1;
             _pauseScreen.gameObject.SetActive(false);
         }
         else if (pauseGame == PauseSetting.pause || pauseGame == PauseSetting.toggle)
         {
-            _isGamePaused = true;
+            isGamePaused = true;
             ShowCursor();
             Time.timeScale = 0;
             _pauseScreen.SetActive(true);
