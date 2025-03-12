@@ -60,7 +60,6 @@ public class GameManager : MonoBehaviour
         else if (pauseGame == PauseSetting.pause || pauseGame == PauseSetting.toggle)
         {
             isGamePaused = true;
-            ShowCursor();
             Time.timeScale = 0;
             _pauseScreen.SetActive(true);
         }
@@ -73,12 +72,6 @@ public class GameManager : MonoBehaviour
         {
             _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = true;
         }
-    }
-
-    private void ShowCursor()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 
     private void HideCursor()
@@ -107,7 +100,6 @@ public class GameManager : MonoBehaviour
 
     public void Finish()
     {
-        ShowCursor();
         Time.timeScale = 0;
         _timer.SetActive(false);
         _finishScreen.SetActive(true);

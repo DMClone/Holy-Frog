@@ -42,6 +42,9 @@ public class LevelManager : MonoBehaviour
 
     public void ToHome()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 1;
         SceneManager.LoadScene("Scenes/MainMenu");
     }
 }

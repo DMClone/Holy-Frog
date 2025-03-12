@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class LevelButtonManager : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class LevelButtonManager : MonoBehaviour
     [SerializeField] private GameObject _levelButton;
     private void Start()
     {
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 1; i++)
         {
             LevelButton levelButton = Instantiate(_levelButton, gameObject.transform).GetComponent<LevelButton>();
             levelButton.gameObject.name = "Button" + (i + 1);
@@ -19,6 +20,7 @@ public class LevelButtonManager : MonoBehaviour
             {
                 HomeMenu.instance.screens[1].firstButton = levelButton.gameObject.GetComponent<Button>();
             }
+            levelButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (i + 1) + "";
         }
     }
 }

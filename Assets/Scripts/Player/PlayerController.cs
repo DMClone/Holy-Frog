@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded;
     float _jumpCharge;
 
+    [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
+    [Tooltip("Percentage of jump force added on start")][SerializeField][Range(0, 1)] private float _startingForce;
     [SerializeField][Range(0, 200)] private int _jumpHeight;
     [SerializeField][Range(0, 200)] private int _jumpForce;
 
@@ -101,7 +103,14 @@ public class PlayerController : MonoBehaviour
         if (_jumpsLeft != 0 && _isJumpCancelled == false && !_gameManager.isGamePaused)
         {
             lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
-            _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce, (_jumpCharge + 0.3f) * _jumpHeight, lookDir.z * _jumpForce), ForceMode.Impulse);
+
+
+            float heightStrength = _jumpCharge + _startingHeight;
+            float forceStrength = _jumpCharge + _startingForce;
+            if (heightStrength > 1) heightStrength = 1;
+            if (forceStrength > 1) forceStrength = 1;
+
+            _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce * forceStrength, _jumpHeight * heightStrength, lookDir.z * _jumpForce * forceStrength), ForceMode.Impulse);
             _jumpsLeft -= 1;
             _jumpCharge = 0;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);

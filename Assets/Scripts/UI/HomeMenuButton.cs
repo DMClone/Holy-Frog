@@ -9,4 +9,9 @@ public class HomeMenuButton : MonoBehaviour
     {
         HomeMenu.instance.LoadScreen(partOfScreen, showScreen);
     }
+
+    public void QuitToDesktop()
+    {
+        Application.Quit();
+    }
 }
