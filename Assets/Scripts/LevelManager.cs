@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
 
-    public UnityEvent ue_sceneReset;
+    public UnityEvent uesceneReset;
 
     [SerializeField] private GameObject canvas;
 
