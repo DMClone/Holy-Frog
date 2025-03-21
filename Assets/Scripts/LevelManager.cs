@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
@@ -11,14 +12,16 @@ public class LevelManager : MonoBehaviour
     public UnityEvent uesceneReset;
 
     [SerializeField] private GameObject canvas;
+    [SerializeField] private PlayerController _playerController;
 
     public int levelsUnlocked;
-    public int levelInt;
+    [SerializeField] private int _maxLevels;
 
     private void Awake()
     {
         if (instance == null)
             instance = this;
+        // PlayerPrefs.DeleteKey("LevelsUnlocked");
 
         DontDestroyOnLoad(this);
 
@@ -38,7 +41,19 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel(int level)
     {
-        SceneManager.LoadScene("Scenes/Levels/Level" + level);
+        string path = "Scenes/Levels/Level" + level;
+        StartCoroutine(SceneLoad(path));
+    }
+
+    private IEnumerator SceneLoad(string scenePath)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenePath);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+            _playerController.enabled = true;
+        }
     }
 
     public void ToHome()
@@ -46,6 +61,17 @@ public class LevelManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 1;
-        SceneManager.LoadScene("Scenes/MainMenu");
+        _playerController.enabled = false;
+        string path = "Scenes/MainMenu";
+        StartCoroutine(SceneLoad(path));
+    }
+
+    public void UpdateUnlock(int levelUnlocked)
+    {
+        if (levelsUnlocked < levelUnlocked && levelUnlocked <= _maxLevels)
+        {
+            PlayerPrefs.SetInt("LevelsUnlocked", levelUnlocked);
+            levelsUnlocked = levelUnlocked;
+        }
     }
 }

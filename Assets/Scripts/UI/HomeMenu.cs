@@ -7,6 +7,7 @@ public class HomeMenu : MonoBehaviour
     public static HomeMenu instance;
     private void Awake()
     {
+        Time.timeScale = 1;
         if (instance == null)
         {
             instance = this;
@@ -35,7 +36,6 @@ public class HomeMenu : MonoBehaviour
             calledScreen.rectTransform.transform.DOLocalMoveY(calledScreen.ShowPosY, 0.75f);
             calledScreen.firstButton.Select();
         }
-        Debug.Log(calledScreen.rectTransform.name);
 
         Screens screen = screens[partOfScreen];
         if (screen.rectTransform.position.y != screen.RestPosY)

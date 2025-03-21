@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public enum PauseSetting
 {
-    pause,
-    resume,
-    toggle
+    Pause,
+    Resume,
+    Toggle
 }
 
 public class GameManager : MonoBehaviour
@@ -23,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     public bool isGamePaused = true;
     private bool _isNewRun = true;
+    public Transform start;
+    public float startRotation;
 
     private void Awake()
     {
@@ -40,37 +43,48 @@ public class GameManager : MonoBehaviour
         _pauseScreen = canvas.transform.GetChild(0).gameObject;
         _finishScreen = canvas.transform.GetChild(1).gameObject;
         _timer = canvas.transform.GetChild(2).gameObject;
+
+        PlayerController.instance.gameManager = this;
+        PlayerController.instance.GameManagerHook();
     }
 
     public void PauseToggle(PauseSetting pauseGame, bool enableRestartButton)
     {
-        if (isGamePaused && (pauseGame == PauseSetting.resume || pauseGame == PauseSetting.toggle))
+        if (!_finishScreen.activeSelf)
         {
-            isGamePaused = false;
-            HideCursor();
-            Time.timeScale = 1;
-            _pauseScreen.gameObject.SetActive(false);
-
-            if (_isNewRun)
+            if (isGamePaused && (pauseGame == PauseSetting.Resume || pauseGame == PauseSetting.Toggle))
             {
-                _timerText.BeginTimer();
-                _isNewRun = false;
+                isGamePaused = false;
+                HideCursor();
+                Time.timeScale = 1;
+                _pauseScreen.gameObject.SetActive(false);
+
+                if (_isNewRun)
+                {
+                    _timerText.BeginTimer();
+                    _isNewRun = false;
+                }
+            }
+            else if (pauseGame == PauseSetting.Pause || pauseGame == PauseSetting.Toggle)
+            {
+                isGamePaused = true;
+                Time.timeScale = 0;
+                _pauseScreen.SetActive(true);
+            }
+
+            if (!enableRestartButton)
+            {
+                _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
+            }
+            else if (pauseGame == PauseSetting.Toggle)
+            {
+                _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = true;
             }
         }
-        else if (pauseGame == PauseSetting.pause || pauseGame == PauseSetting.toggle)
+        else
         {
-            isGamePaused = true;
-            Time.timeScale = 0;
-            _pauseScreen.SetActive(true);
-        }
-
-        if (!enableRestartButton)
-        {
-            _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
-        }
-        else if (pauseGame == PauseSetting.toggle)
-        {
-            _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = true;
+            _finishScreen.SetActive(false);
+            RestartLevel();
         }
     }
 
@@ -82,11 +96,15 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
+        Time.timeScale = 1;
         ue_sceneReset.Invoke();
+        Time.timeScale = 0;
         isGamePaused = true;
-        _timer.SetActive(true);
+        if (_timer != null)
+            _timer?.SetActive(true);
         _timerText._text.text = null;
-        _pauseScreen.SetActive(true);
+        if (_pauseScreen != null)
+            _pauseScreen?.SetActive(true);
         _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
         _pauseScreen.transform.GetChild(0).GetComponent<Button>().Select();
         _timerText.EndTimer();
@@ -100,10 +118,23 @@ public class GameManager : MonoBehaviour
 
     public void Finish()
     {
+        isGamePaused = true;
         Time.timeScale = 0;
         _timer.SetActive(false);
         _finishScreen.SetActive(true);
-        _finishScreen.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = _timerText.GetTimerString();
+        _finishScreen.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = "Time: " + _timerText.GetTimerString();
         _finishScreen.transform.GetChild(1).GetComponent<Button>().Select();
+
+        int levelUnlocked = GetLevelIndex() + 1;
+        LevelManager.instance.UpdateUnlock(levelUnlocked);
+    }
+
+    private int GetLevelIndex()
+    {
+        int levelIndex = SceneManager.GetActiveScene().name.IndexOf("Level");
+        string numberPart = SceneManager.GetActiveScene().name.Substring(levelIndex + "Level".Length);
+
+        int.TryParse(numberPart, out int levelNumber);
+        return levelNumber;
     }
 }

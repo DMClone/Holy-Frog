@@ -8,7 +8,7 @@ public class LevelButtonManager : MonoBehaviour
     [SerializeField] private GameObject _levelButton;
     private void Start()
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < LevelManager.instance.levelsUnlocked; i++)
         {
             LevelButton levelButton = Instantiate(_levelButton, gameObject.transform).GetComponent<LevelButton>();
             levelButton.gameObject.name = "Button" + (i + 1);

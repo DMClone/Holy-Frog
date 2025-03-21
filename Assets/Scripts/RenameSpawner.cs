@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEditor;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(EntitySpawner))]

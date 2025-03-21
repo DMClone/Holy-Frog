@@ -33,7 +33,6 @@ public class Timer : MonoBehaviour
 
     IEnumerator UpdateTimer()
     {
-        Debug.Log("Doing Coroutine");
         while (_timerGoing)
         {
             _text.text = GetTimerString();
