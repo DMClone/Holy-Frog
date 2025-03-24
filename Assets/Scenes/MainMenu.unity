@@ -1067,6 +1067,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8545071271329236387, guid: 2ba84dca5dc8f0f4ea82ea4dad6a9785, type: 3}
   m_PrefabInstance: {fileID: 187114954}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &200670150 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4898033651210286138, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 1818868118}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &200670152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200670150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d38c8e7f354894aa6c558d985066ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frog: {fileID: 1733641502}
+  _rigidbody: {fileID: 0}
 --- !u!1 &208378034
 GameObject:
   m_ObjectHideFlags: 0
@@ -5422,6 +5441,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8545071271329236387, guid: 2ba84dca5dc8f0f4ea82ea4dad6a9785, type: 3}
   m_PrefabInstance: {fileID: 1714656510}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1733641502 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8746580234680456734, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 1818868118}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1773674247
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5509,17 +5533,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
   m_PrefabInstance: {fileID: 1818868118}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1733641502}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce697c94e57d98b44abcaf0561928223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &1803006633 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 1394432070374589639, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-  m_PrefabInstance: {fileID: 1818868118}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1818868118
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5569,25 +5588,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: _boxCollider
+      propertyPath: tongue
       value: 
-      objectReference: {fileID: 1803006633}
+      objectReference: {fileID: 200670150}
     - target: {fileID: 8746580234680456734, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: m_Name
       value: Frog
       objectReference: {fileID: 0}
-    - target: {fileID: 8801663716917104225, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: IgnoreTimeScale
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4898033651210286138, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 200670152}
   m_SourcePrefab: {fileID: 100100000, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
 --- !u!1001 &1858418881
 PrefabInstance:

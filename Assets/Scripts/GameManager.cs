@@ -16,16 +16,17 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     private Timer _timerText;
 
-    public UnityEvent ue_sceneReset;
+    [HideInInspector] public UnityEvent ue_sceneReset;
 
     private GameObject _pauseScreen;
     private GameObject _finishScreen;
     private GameObject _timer;
 
-    public bool isGamePaused = true;
+    [HideInInspector] public bool isGamePaused = true;
     private bool _isNewRun = true;
     public Transform start;
     public float startRotation;
+    [Tooltip("Will start indication 10 units up")] public int killDepth;
 
     private void Awake()
     {

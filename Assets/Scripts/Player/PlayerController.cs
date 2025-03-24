@@ -21,12 +21,13 @@ public class PlayerController : MonoBehaviour
     private PlayerInput _playerInput;
     private Rigidbody _rigidbody;
     private Animator _animator;
-    public BoxCollider _boxCollider;
+    [SerializeField] private BoxCollider _boxCollider;
+    public GameObject tongue;
+    private FrogTongue _frogTongue;
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
-    [SerializeField] private int _maxJumps;
-    private int _jumpsLeft;
+    [SerializeField] private bool _canJump = true;
     private bool _isJumpCancelled;
     public bool _isGrounded = true;
     private float _jumpCharge;
@@ -34,7 +35,7 @@ public class PlayerController : MonoBehaviour
     // float and bool for storing jump data if we jumped some frames before we land
     private Coroutine _leniencyCoroutine;
     private float _lastCharge;
-    private bool _jumpToken;
+    [SerializeField] private bool _jumpToken;
 
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
     [Tooltip("Percentage of jump force added on start")][SerializeField][Range(0, 1)] private float _startingForce;
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = transform.GetChild(0).GetComponent<Animator>();
-        _jumpsLeft = _maxJumps;
+        _frogTongue = tongue.GetComponent<FrogTongue>();
     }
 
     void OnEnable()
@@ -105,8 +106,8 @@ public class PlayerController : MonoBehaviour
         transform.position = gameManager.start.position + new Vector3(0, 0.3f, 0);
         transform.eulerAngles = new Vector3(0, gameManager.startRotation, 0);
         _jumpCharge = 0;
+        _canJump = true;
         _isGrounded = true;
-        _jumpsLeft = _maxJumps;
         _jumpToken = false;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().HorizontalAxis.Value = transform.eulerAngles.y;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().VerticalAxis.Value = 10;
@@ -142,12 +143,14 @@ public class PlayerController : MonoBehaviour
 
     private void InputJump(InputAction.CallbackContext context) // Released jump button when charging jump
     {
-        if (_jumpsLeft != 0 && _isJumpCancelled == false && !gameManager.isGamePaused && !_jumpToken)
+        if (_canJump && _isJumpCancelled == false && !gameManager.isGamePaused && !_jumpToken)
         {
+            Debug.Log("Tried normal jump");
             Jump(true);
         }
         else
         {
+            Debug.Log("Tried leniency jump");
             _lastCharge = _jumpCharge;
             _jumpCharge = 0;
             if (!_isGrounded)
@@ -161,30 +164,33 @@ public class PlayerController : MonoBehaviour
 
     private void Jump(bool input)
     {
-        StartCoroutine(GroundUpdate());
-        lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
-
-        float usedCharge;
-        if (input)
-            usedCharge = _jumpCharge;
-
-        else
+        if (_canJump)
         {
-            usedCharge = _lastCharge;
+            _canJump = false;
+            Debug.Log("Jumped");
+            StartCoroutine(GroundUpdate());
+            lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
+
+            float usedCharge;
+            if (input)
+                usedCharge = _jumpCharge;
+
+            else
+            {
+                usedCharge = _lastCharge;
+            }
+
+            float heightStrength = usedCharge + _startingHeight;
+            float forceStrength = usedCharge + _startingForce;
+            if (heightStrength > 1) heightStrength = 1;
+            if (forceStrength > 1) forceStrength = 1;
+
+            _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce * forceStrength, _jumpHeight * heightStrength, lookDir.z * _jumpForce * forceStrength), ForceMode.Impulse);
+            _jumpCharge = 0;
+            _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
+            _animator.Play("Jump", -1, 0f);
+            StartCoroutine(BugCheck());
         }
-
-        float heightStrength = usedCharge + _startingHeight;
-        float forceStrength = usedCharge + _startingForce;
-        if (heightStrength > 1) heightStrength = 1;
-        if (forceStrength > 1) forceStrength = 1;
-
-        _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce * forceStrength, _jumpHeight * heightStrength, lookDir.z * _jumpForce * forceStrength), ForceMode.Impulse);
-        _jumpsLeft -= 1;
-        _jumpCharge = 0;
-        _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
-        _animator.ResetTrigger("Land");
-        _animator.SetTrigger("Jump");
-        StartCoroutine(BugCheck());
     }
 
     // Check if we haven't left the ground, but expended a jump. If both true: 
@@ -193,10 +199,10 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
-        if (_jumpsLeft != _maxJumps && _rigidbody.linearVelocity.magnitude == 0)
-        {
-            _isGrounded = false;
-        }
+        // if (_is)
+        // {
+        //     _isGrounded = false;
+        // }
     }
 
 
@@ -227,13 +233,19 @@ public class PlayerController : MonoBehaviour
         if (InputSystem.actions.FindAction("Jump").phase == InputActionPhase.Started && _jumpCharge < 1 && !gameManager.isGamePaused)
         {
             _jumpCharge += 1 * Time.deltaTime;
-            if (_jumpCharge > 1)
-                _jumpCharge = 1;
+            if (_jumpCharge > 1) _jumpCharge = 1;
         }
     }
 
     void FixedUpdate()
     {
+        if (_rigidbody.position.y <= gameManager?.killDepth)
+        {
+            gameManager.RestartLevel();
+            gameManager.PauseToggle(PauseSetting.Pause, false);
+            return;
+        }
+
         _lastVelocity = _rigidbody.linearVelocity;
 
         bool foundGround = false;
@@ -241,7 +253,7 @@ public class PlayerController : MonoBehaviour
         Vector3 worldCenter = transform.position + _boxCollider.center;
         Vector3 halfExtends = _boxCollider.size / 2;
 
-        RaycastHit[] hit = Physics.BoxCastAll(worldCenter, halfExtends, Vector3.down, transform.rotation, 0.01f);
+        RaycastHit[] hit = Physics.BoxCastAll(worldCenter, halfExtends, Vector3.down, transform.rotation, 0.04f);
         if (hit.Length > 0)
         {
             for (int i = 0; i < hit.Length; i++)
@@ -253,8 +265,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        _animator.SetBool("Grounded", foundGround);
 
         if (foundGround != _isGrounded)
         {
@@ -269,8 +279,7 @@ public class PlayerController : MonoBehaviour
     void Land()
     {
         Debug.Log("Landed");
-        _jumpsLeft = _maxJumps;
-        // _animator.
+        _canJump = true;
         if (InputSystem.actions.FindAction("Grip").phase != InputActionPhase.Waiting)
             _rigidbody.linearVelocity = Vector3.zero;
         else
@@ -279,15 +288,9 @@ public class PlayerController : MonoBehaviour
 
         if (_jumpToken)
         {
-            _animator.ResetTrigger("Jump");
-            _animator.SetTrigger("Idle");
             Jump(false);
         }
-        else
-        {
-            _animator.ResetTrigger("Jump");
-            _animator.SetTrigger("Land");
-        }
+        else _animator.Play("Land", -1, 0f);
     }
 
     #endregion
@@ -298,4 +301,15 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawCube(_boxCollider.bounds.center - new Vector3(0, 0.2f, 0), _boxCollider.bounds.size);
     }
     #endregion
+
+    private void ShootTongue()
+    {
+
+    }
+
+    private void GetDisowned()
+    {
+        transform.SetParent(null);
+    }
+
 }

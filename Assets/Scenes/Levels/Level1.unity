@@ -2333,6 +2333,7 @@ MonoBehaviour:
   isGamePaused: 1
   start: {fileID: 9023236451911672831}
   startRotation: 0
+  killDepth: -5
 --- !u!4 &1229230502
 Transform:
   m_ObjectHideFlags: 0
