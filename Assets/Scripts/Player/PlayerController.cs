@@ -27,20 +27,21 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
-    [SerializeField] private bool _canJump = true;
+    private bool _canJump = true;
     private bool _isJumpCancelled;
-    public bool _isGrounded = true;
+    private bool _isGrounded = true;
     private float _jumpCharge;
 
     // float and bool for storing jump data if we jumped some frames before we land
     private Coroutine _leniencyCoroutine;
     private float _lastCharge;
-    [SerializeField] private bool _jumpToken;
+    private bool _jumpToken;
 
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
     [Tooltip("Percentage of jump force added on start")][SerializeField][Range(0, 1)] private float _startingForce;
     [SerializeField][Range(0, 200)] private int _jumpHeight;
     [SerializeField][Range(0, 200)] private int _jumpForce;
+    [SerializeField][Range(0, 0.1f)] private float _leniencyJumpDuration;
 
     #region Setup
     private void Awake()
@@ -58,6 +59,8 @@ public class PlayerController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _animator = transform.GetChild(0).GetComponent<Animator>();
         _frogTongue = tongue.GetComponent<FrogTongue>();
+
+        _camera.SetActive(false);
     }
 
     void OnEnable()
@@ -90,8 +93,12 @@ public class PlayerController : MonoBehaviour
         playerToggleUI.performed -= Pause;
         InputAction playerRestart = InputSystem.actions.FindAction("Restart");
         playerRestart.performed -= Restart;
-        _camera.SetActive(false);
         _cinemachineCamera.SetActive(false);
+    }
+
+    public void DisabeCamera()
+    {
+        _camera.SetActive(false);
     }
 
     public void GameManagerHook()
@@ -102,9 +109,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnReset()
     {
-        _rigidbody.MovePosition(gameManager.start.position + new Vector3(0, 0.3f, 0));
+        _rigidbody.isKinematic = false;
+        _rigidbody.interpolation = RigidbodyInterpolation.None;
         transform.position = gameManager.start.position + new Vector3(0, 0.3f, 0);
+        _rigidbody.MovePosition(gameManager.start.position + new Vector3(0, 0.3f, 0));
         transform.eulerAngles = new Vector3(0, gameManager.startRotation, 0);
+        _rigidbody.MoveRotation(Quaternion.Euler(0, gameManager.startRotation, 0));
         _jumpCharge = 0;
         _canJump = true;
         _isGrounded = true;
@@ -114,7 +124,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody.linearVelocity = Vector3.zero;
         _cinemachineCamera.GetComponent<CinemachineInputAxisController>();
         _animator.Play("Idle", 0, 0);
-        _animator.Update(0);
+        _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
     }
     #endregion
 
@@ -145,12 +155,10 @@ public class PlayerController : MonoBehaviour
     {
         if (_canJump && _isJumpCancelled == false && !gameManager.isGamePaused && !_jumpToken)
         {
-            Debug.Log("Tried normal jump");
             Jump(true);
         }
         else
         {
-            Debug.Log("Tried leniency jump");
             _lastCharge = _jumpCharge;
             _jumpCharge = 0;
             if (!_isGrounded)
@@ -167,44 +175,26 @@ public class PlayerController : MonoBehaviour
         if (_canJump)
         {
             _canJump = false;
-            Debug.Log("Jumped");
             StartCoroutine(GroundUpdate());
             lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
 
             float usedCharge;
             if (input)
                 usedCharge = _jumpCharge;
-
             else
-            {
                 usedCharge = _lastCharge;
-            }
 
             float heightStrength = usedCharge + _startingHeight;
             float forceStrength = usedCharge + _startingForce;
             if (heightStrength > 1) heightStrength = 1;
             if (forceStrength > 1) forceStrength = 1;
-
             _rigidbody.AddForce(new Vector3(lookDir.x * _jumpForce * forceStrength, _jumpHeight * heightStrength, lookDir.z * _jumpForce * forceStrength), ForceMode.Impulse);
+
             _jumpCharge = 0;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
             _animator.Play("Jump", -1, 0f);
-            StartCoroutine(BugCheck());
         }
     }
-
-    // Check if we haven't left the ground, but expended a jump. If both true: 
-    // we determine that we are stuck and should be reset back to being on the ground properly
-    IEnumerator BugCheck()
-    {
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        // if (_is)
-        // {
-        //     _isGrounded = false;
-        // }
-    }
-
 
     private IEnumerator GroundUpdate()
     {
@@ -215,7 +205,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator LeniencyJump()
     {
         _jumpToken = true;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(_leniencyJumpDuration);
         _jumpToken = false;
     }
 
@@ -248,6 +238,14 @@ public class PlayerController : MonoBehaviour
 
         _lastVelocity = _rigidbody.linearVelocity;
 
+        GroundCheck();
+
+        if (!_isGrounded)
+            _rigidbody.AddForce(Vector3.down * 30);
+    }
+
+    private void GroundCheck()
+    {
         bool foundGround = false;
 
         Vector3 worldCenter = transform.position + _boxCollider.center;
@@ -271,14 +269,10 @@ public class PlayerController : MonoBehaviour
             _isGrounded = foundGround;
             if (_isGrounded) Land();
         }
-
-        if (!_isGrounded)
-            _rigidbody.AddForce(Vector3.down * 30);
     }
 
-    void Land()
+    private void Land()
     {
-        Debug.Log("Landed");
         _canJump = true;
         if (InputSystem.actions.FindAction("Grip").phase != InputActionPhase.Waiting)
             _rigidbody.linearVelocity = Vector3.zero;

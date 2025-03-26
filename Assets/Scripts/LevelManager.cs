@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class LevelManager : MonoBehaviour
 {
@@ -11,48 +12,79 @@ public class LevelManager : MonoBehaviour
 
     public UnityEvent uesceneReset;
 
-    [SerializeField] private GameObject canvas;
+    [SerializeField] private LoadingScreen _loadingScreen;
+    [SerializeField] private GameObject _canvas;
     [SerializeField] private PlayerController _playerController;
 
     public int levelsUnlocked;
     [SerializeField] private int _maxLevels;
 
+    [SerializeField] private int _levelTransitionDelay;
+
     private void Awake()
     {
         if (instance == null)
             instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         // PlayerPrefs.DeleteKey("LevelsUnlocked");
 
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
 
         if (PlayerPrefs.HasKey("LevelsUnlocked"))
             levelsUnlocked = PlayerPrefs.GetInt("LevelsUnlocked");
+
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        SceneManager.sceneLoaded += GetCanvas;
+        _loadingScreen = LoadingScreen.instance;
+        GetCanvas();
     }
 
-    private void GetCanvas(Scene scene, LoadSceneMode mode)
+    private void GetCanvas()
     {
-        canvas = LevelCanvas.instance.gameObject;
+        _canvas = LevelCanvas.instance.gameObject;
     }
 
     public void LoadLevel(int level)
     {
         string path = "Scenes/Levels/Level" + level;
-        StartCoroutine(SceneLoad(path));
+        _playerController.enabled = false;
+        StartCoroutine(SceneLoad(path, false));
     }
 
-    private IEnumerator SceneLoad(string scenePath)
+    private IEnumerator SceneLoad(string scenePath, bool isHome)
     {
+        _loadingScreen.FadeIn();
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenePath);
+
+        asyncLoad.allowSceneActivation = false; // Prevent automatic activation
+
+        // Wait for the delay
+
+
+        yield return new WaitForSecondsRealtime(_levelTransitionDelay);
+
+        // Allow scene activation after the delay
+        asyncLoad.allowSceneActivation = true;
+
 
         while (!asyncLoad.isDone)
         {
             yield return null;
-            _playerController.enabled = true;
+            if (!isHome)
+                _playerController.enabled = true;
+            else
+            {
+                _playerController.DisabeCamera();
+                Time.timeScale = 1;
+            }
+            GetCanvas();
+            _loadingScreen.FadeOut();
         }
     }
 
@@ -60,10 +92,9 @@ public class LevelManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        Time.timeScale = 1;
         _playerController.enabled = false;
         string path = "Scenes/MainMenu";
-        StartCoroutine(SceneLoad(path));
+        StartCoroutine(SceneLoad(path, true));
     }
 
     public void UpdateUnlock(int levelUnlocked)

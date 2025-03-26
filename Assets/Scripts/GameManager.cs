@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public enum PauseSetting
 {
@@ -14,7 +15,7 @@ public enum PauseSetting
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    private Timer _timerText;
+    [SerializeField] private Timer _timerText;
 
     [HideInInspector] public UnityEvent ue_sceneReset;
 
@@ -32,7 +33,6 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null)
             instance = this;
-
         _timerText = GetComponent<Timer>();
         HideCursor();
         Time.timeScale = 0;

@@ -23,4 +23,11 @@ public class LevelButtonManager : MonoBehaviour
             levelButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = (i + 1) + "";
         }
     }
+
+
+
+    public void DisableAllButtons()
+    {
+        _buttonCollection.InteractableToggle();
+    }
 }
