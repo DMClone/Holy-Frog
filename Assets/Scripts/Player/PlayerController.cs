@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rigidbody;
     private Animator _animator;
     [SerializeField] private BoxCollider _boxCollider;
-    public GameObject tongue;
-    private FrogTongue _frogTongue;
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
@@ -34,8 +32,14 @@ public class PlayerController : MonoBehaviour
 
     // float and bool for storing jump data if we jumped some frames before we land
     private Coroutine _leniencyCoroutine;
+    private Coroutine _rumbleCoroutine;
     private float _lastCharge;
     private bool _jumpToken;
+
+    // Attack
+    public GameObject tongue;
+    private FrogTongue _frogTongue;
+    private bool _canAttack;
 
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
     [Tooltip("Percentage of jump force added on start")][SerializeField][Range(0, 1)] private float _startingForce;
@@ -58,7 +62,7 @@ public class PlayerController : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody>();
         _animator = transform.GetChild(0).GetComponent<Animator>();
-        _frogTongue = tongue.GetComponent<FrogTongue>();
+        _frogTongue = tongue.transform.GetChild(0).GetComponent<FrogTongue>();
 
         _camera.SetActive(false);
     }
@@ -70,6 +74,8 @@ public class PlayerController : MonoBehaviour
         playerJump.started += JumpCharge;
         playerJump.canceled += InputJump;
         playerJump.performed += JumpCancel;
+        InputAction playerAttack = InputSystem.actions.FindAction("Attack");
+        playerAttack.performed += ShootTongue;
         InputAction playerGrip = InputSystem.actions.FindAction("Grip");
         playerGrip.started += GripOnGround;
         InputAction playerToggleUI = InputSystem.actions.FindAction("TogglePause");
@@ -193,6 +199,7 @@ public class PlayerController : MonoBehaviour
             _jumpCharge = 0;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
             _animator.Play("Jump", -1, 0f);
+            ControllerRumble(0.2f, 0.2f, 0.1f);
         }
     }
 
@@ -281,10 +288,12 @@ public class PlayerController : MonoBehaviour
 
 
         if (_jumpToken)
-        {
             Jump(false);
+        else
+        {
+            _animator.Play("Land", -1, 0f);
+            ControllerRumble(0.2f, 0.2f, 0.25f);
         }
-        else _animator.Play("Land", -1, 0f);
     }
 
     #endregion
@@ -296,9 +305,13 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    private void ShootTongue()
+    private void ShootTongue(InputAction.CallbackContext context)
     {
+        _frogTongue.gameObject.SetActive(true);
 
+        RaycastHit hit;
+        if (Physics.Raycast(_camera.transform.position, Quaternion.Euler(-15f, 0, 0) * _camera.transform.forward, out hit, Mathf.Infinity))
+            Debug.DrawLine(_camera.transform.position, hit.point, Color.yellow);
     }
 
     private void GetDisowned()
@@ -306,4 +319,19 @@ public class PlayerController : MonoBehaviour
         transform.SetParent(null);
     }
 
+    public void ControllerRumble(float lowFreq, float highFreq, float duration)
+    {
+        if (_rumbleCoroutine != null)
+        {
+            StopCoroutine(_rumbleCoroutine);
+        }
+        _rumbleCoroutine = StartCoroutine(Rumble(lowFreq, highFreq, duration));
+    }
+
+    private IEnumerator Rumble(float lowFreq, float highFreq, float duration)
+    {
+        Gamepad.current.SetMotorSpeeds(lowFreq, highFreq);
+        yield return new WaitForSecondsRealtime(duration);
+        Gamepad.current.SetMotorSpeeds(0, 0);
+    }
 }

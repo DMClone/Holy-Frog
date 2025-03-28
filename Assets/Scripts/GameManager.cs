@@ -101,11 +101,9 @@ public class GameManager : MonoBehaviour
         ue_sceneReset.Invoke();
         Time.timeScale = 0;
         isGamePaused = true;
-        if (_timer != null)
-            _timer?.SetActive(true);
+        _timer?.SetActive(true);
         _timerText._text.text = null;
-        if (_pauseScreen != null)
-            _pauseScreen?.SetActive(true);
+        _pauseScreen?.SetActive(true);
         _pauseScreen.transform.GetChild(1).GetComponent<Button>().interactable = false;
         _pauseScreen.transform.GetChild(0).GetComponent<Button>().Select();
         _timerText.EndTimer();

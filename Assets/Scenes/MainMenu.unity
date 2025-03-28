@@ -1147,20 +1147,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4898033651210286138, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
   m_PrefabInstance: {fileID: 1818868118}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &200670152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 200670150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71d38c8e7f354894aa6c558d985066ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frog: {fileID: 1733641502}
-  _rigidbody: {fileID: 0}
 --- !u!1 &208378034
 GameObject:
   m_ObjectHideFlags: 0
@@ -2203,7 +2189,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -3762,6 +3748,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 014107f31cdb45742926accaf99f944b, type: 3}
   m_PrefabInstance: {fileID: 1045137496}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1080076557 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6252822727108202288, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 1818868118}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1080076561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080076557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d38c8e7f354894aa6c558d985066ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frog: {fileID: 1733641502}
+  _rigidbody: {fileID: 0}
 --- !u!1001 &1122176159
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5801,9 +5806,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4898033651210286138, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 6252822727108202288, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 200670152}
+      addedObject: {fileID: 1080076561}
   m_SourcePrefab: {fileID: 100100000, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
 --- !u!1001 &1858418881
 PrefabInstance:
