@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     // Attack
     public GameObject tongue;
     private FrogTongue _frogTongue;
-    private bool _canAttack;
+    public bool canAttack = true;
 
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
     [Tooltip("Percentage of jump force added on start")][SerializeField][Range(0, 1)] private float _startingForce;
@@ -199,7 +199,8 @@ public class PlayerController : MonoBehaviour
             _jumpCharge = 0;
             _rigidbody.rotation = Quaternion.LookRotation(lookDir, transform.up);
             _animator.Play("Jump", -1, 0f);
-            ControllerRumble(0.2f, 0.2f, 0.1f);
+            if (_playerInput.currentControlScheme == "Gamepad")
+                ControllerRumble(0.2f, 0.2f, 0.1f);
         }
     }
 
@@ -292,7 +293,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             _animator.Play("Land", -1, 0f);
-            ControllerRumble(0.2f, 0.2f, 0.25f);
+            if (_playerInput.currentControlScheme == "Gamepad")
+                ControllerRumble(0.2f, 0.2f, 0.25f);
         }
     }
 
@@ -307,11 +309,17 @@ public class PlayerController : MonoBehaviour
 
     private void ShootTongue(InputAction.CallbackContext context)
     {
-        _frogTongue.gameObject.SetActive(true);
-
+        Vector3 point = new Vector3();
         RaycastHit hit;
         if (Physics.Raycast(_camera.transform.position, Quaternion.Euler(-15f, 0, 0) * _camera.transform.forward, out hit, Mathf.Infinity))
-            Debug.DrawLine(_camera.transform.position, hit.point, Color.yellow);
+            point = hit.point;
+        if ((point != Vector3.zero) && canAttack && Vector3.Distance(transform.position, hit.point) >= 10)
+        {
+            _frogTongue.gameObject.SetActive(true);
+
+            _frogTongue.SetTarget(hit.point);
+            canAttack = false;
+        }
     }
 
     private void GetDisowned()

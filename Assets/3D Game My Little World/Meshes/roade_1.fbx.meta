@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: ba39c7f77426b94418ad9a236898abdf
+AssetOrigin:
+  serializedVersion: 1
+  productId: 298245
+  packageName: 3D Game My Little World
+  packageVersion: 1.0.0
+  assetPath: Assets/3D Game My Little World/Meshes/roade_1.fbx
+  uploadId: 697745
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -13,7 +20,7 @@ ModelImporter:
     materialImportMode: 2
     materialName: 0
     materialSearch: 1
-    materialLocation: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -21,8 +28,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -112,10 +117,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 298245
-  packageName: 3D Game My Little World
-  packageVersion: 1.0.0
-  assetPath: Assets/3D Game My Little World/Meshes/roade_1.fbx
-  uploadId: 697745

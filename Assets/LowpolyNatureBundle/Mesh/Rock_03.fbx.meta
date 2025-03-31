@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 1f9b63f8346f9bb46bc0c7aa37745bff
+AssetOrigin:
+  serializedVersion: 1
+  productId: 286938
+  packageName: Lowpoly Nature Bundle
+  packageVersion: 1.0
+  assetPath: Assets/LowpolyNatureBundle/Mesh/Rock_03.fbx
+  uploadId: 673155
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -8,7 +15,7 @@ ModelImporter:
     materialImportMode: 2
     materialName: 0
     materialSearch: 1
-    materialLocation: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -16,8 +23,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -107,10 +112,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 286938
-  packageName: Lowpoly Nature Bundle
-  packageVersion: 1.0
-  assetPath: Assets/LowpolyNatureBundle/Mesh/Rock_03.fbx
-  uploadId: 673155
