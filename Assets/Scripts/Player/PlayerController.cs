@@ -129,6 +129,7 @@ public class PlayerController : MonoBehaviour
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().VerticalAxis.Value = 10;
         _rigidbody.linearVelocity = Vector3.zero;
         _cinemachineCamera.GetComponent<CinemachineInputAxisController>();
+        _frogTongue.OnReset();
         _animator.Play("Idle", 0, 0);
         _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
     }
@@ -300,24 +301,34 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+
+    Vector3 point = new Vector3();
+
     #region DELETEONPROJECTEND
     void OnDrawGizmosSelected()
     {
         Gizmos.DrawCube(_boxCollider.bounds.center - new Vector3(0, 0.2f, 0), _boxCollider.bounds.size);
+        Gizmos.DrawCube(point, new Vector3(2, 2, 2));
     }
     #endregion
 
     private void ShootTongue(InputAction.CallbackContext context)
     {
-        Vector3 point = new Vector3();
         RaycastHit hit;
-        if (Physics.Raycast(_camera.transform.position, Quaternion.Euler(-15f, 0, 0) * _camera.transform.forward, out hit, Mathf.Infinity))
+
+        // Adjust the camera's forward direction to aim slightly above
+        Vector3 adjustedForward = _camera.transform.forward + new Vector3(0, 0.25f, 0); // Added upward offset
+
+        if (Physics.Raycast(_camera.transform.position, adjustedForward, out hit, _frogTongue.maxRange + 10, ~(1 << 7)))
             point = hit.point;
-        if ((point != Vector3.zero) && canAttack && Vector3.Distance(transform.position, hit.point) >= 10)
+        else
+            return;
+
+        if ((point != Vector3.zero) && canAttack && Vector3.Distance(transform.position, hit.point) <= _frogTongue.maxRange)
         {
             _frogTongue.gameObject.SetActive(true);
 
-            _frogTongue.SetTarget(hit.point);
+            _frogTongue.SetTarget(point);
             canAttack = false;
         }
     }
