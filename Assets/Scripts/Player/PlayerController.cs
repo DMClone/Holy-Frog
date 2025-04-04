@@ -15,13 +15,15 @@ public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
 
-    public GameManager gameManager;
-    private GameObject _camera;
-    private GameObject _cinemachineCamera;
-    private PlayerInput _playerInput;
-    private Rigidbody _rigidbody;
-    private Animator _animator;
+    [Header("References")]
+    [HideInInspector] public GameManager gameManager;
+    [SerializeField] private GameObject _camera;
+    [SerializeField] private GameObject _cinemachineCamera;
+    [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private Animator _animator;
     [SerializeField] private BoxCollider _boxCollider;
+    [SerializeField] private FrogTongue _frogTongue;
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
@@ -37,8 +39,6 @@ public class PlayerController : MonoBehaviour
     private bool _jumpToken;
 
     // Attack
-    public GameObject tongue;
-    private FrogTongue _frogTongue;
     public bool canAttack = true;
 
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
@@ -53,16 +53,12 @@ public class PlayerController : MonoBehaviour
         if (instance == null)
             instance = this;
         else
+        {
             Destroy(gameObject);
+            return;
+        }
 
         DontDestroyOnLoad(gameObject);
-
-        _camera = transform.GetChild(1).gameObject;
-        _cinemachineCamera = transform.GetChild(2).gameObject;
-        _playerInput = GetComponent<PlayerInput>();
-        _rigidbody = GetComponent<Rigidbody>();
-        _animator = transform.GetChild(0).GetComponent<Animator>();
-        _frogTongue = tongue.transform.GetChild(0).GetComponent<FrogTongue>();
 
         _camera.SetActive(false);
     }
@@ -76,6 +72,7 @@ public class PlayerController : MonoBehaviour
         playerJump.performed += JumpCancel;
         InputAction playerAttack = InputSystem.actions.FindAction("Attack");
         playerAttack.performed += ShootTongue;
+        playerAttack.canceled += RetractTongue;
         InputAction playerGrip = InputSystem.actions.FindAction("Grip");
         playerGrip.started += GripOnGround;
         InputAction playerToggleUI = InputSystem.actions.FindAction("TogglePause");
@@ -93,6 +90,9 @@ public class PlayerController : MonoBehaviour
         playerJump.started -= JumpCharge;
         playerJump.canceled -= InputJump;
         playerJump.performed -= JumpCancel;
+        InputAction playerAttack = InputSystem.actions.FindAction("Attack");
+        playerAttack.performed -= ShootTongue;
+        playerAttack.canceled -= RetractTongue;
         InputAction playerGrip = InputSystem.actions.FindAction("Grip");
         playerGrip.started -= GripOnGround;
         InputAction playerToggleUI = InputSystem.actions.FindAction("TogglePause");
@@ -324,6 +324,8 @@ public class PlayerController : MonoBehaviour
         else
             return;
 
+        Debug.Log(Vector3.Angle(transform.position, point));
+
         if ((point != Vector3.zero) && canAttack && Vector3.Distance(transform.position, hit.point) <= _frogTongue.maxRange)
         {
             _frogTongue.gameObject.SetActive(true);
@@ -331,6 +333,12 @@ public class PlayerController : MonoBehaviour
             _frogTongue.SetTarget(point);
             canAttack = false;
         }
+    }
+
+    private void RetractTongue(InputAction.CallbackContext context)
+    {
+        Debug.Log("Cancelled");
+        _frogTongue.StopSwinging();
     }
 
     private void GetDisowned()
