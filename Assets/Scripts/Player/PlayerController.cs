@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
     public static PlayerController instance;
 
     [Header("References")]
-    [HideInInspector] public GameManager gameManager;
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject _cinemachineCamera;
     [SerializeField] private PlayerInput _playerInput;
@@ -24,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private BoxCollider _boxCollider;
     [SerializeField] private FrogTongue _frogTongue;
+    [HideInInspector] public GameManager gameManager;
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
@@ -41,11 +41,21 @@ public class PlayerController : MonoBehaviour
     // Attack
     public bool canAttack = true;
 
+    [Header("Jump settings")]
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
     [Tooltip("Percentage of jump force added on start")][SerializeField][Range(0, 1)] private float _startingForce;
     [SerializeField][Range(0, 200)] private int _jumpHeight;
     [SerializeField][Range(0, 200)] private int _jumpForce;
     [SerializeField][Range(0, 0.1f)] private float _leniencyJumpDuration;
+
+    [Header("Joint settings")]
+    [Range(0, 200)] public int spring;
+    [Range(0, 200)] public int damper;
+    [Range(0, 200)] public int massScale;
+
+    [Header("Tongue settings")]
+    [SerializeField][Range(0, 20)] private float _releaseForceMult;
+
 
     #region Setup
     private void Awake()
@@ -324,8 +334,6 @@ public class PlayerController : MonoBehaviour
         else
             return;
 
-        Debug.Log(Vector3.Angle(transform.position, point));
-
         if ((point != Vector3.zero) && canAttack && Vector3.Distance(transform.position, hit.point) <= _frogTongue.maxRange)
         {
             _frogTongue.gameObject.SetActive(true);
@@ -335,15 +343,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     private void RetractTongue(InputAction.CallbackContext context)
     {
-        Debug.Log("Cancelled");
-        _frogTongue.StopSwinging();
+        if (_frogTongue.StopSwinging() && TongueAngle())
+            ReleaseForce();
     }
 
-    private void GetDisowned()
+    private bool TongueAngle()
     {
-        transform.SetParent(null);
+        float dotProduct = Vector3.Dot(point, Vector3.up);
+
+        if (dotProduct > 0)
+        {
+            float angleToUp = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f)) * Mathf.Rad2Deg;
+
+            float maxAngleFromHorizontal = 45;
+            return angleToUp < maxAngleFromHorizontal;
+        }
+        else
+            return false;
+    }
+
+    private void ReleaseForce()
+    {
+        lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
+
+        _rigidbody.AddForce(new Vector3(lookDir.x * _releaseForceMult, _releaseForceMult, lookDir.z * _releaseForceMult), ForceMode.Impulse);
     }
 
     public void ControllerRumble(float lowFreq, float highFreq, float duration)

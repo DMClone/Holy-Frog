@@ -4,6 +4,7 @@ using UnityEngine;
 // No github was provided so video link will have to do
 public class FrogTongue : MonoBehaviour
 {
+    public PlayerController playerController;
     public GameObject frog;
     public GameObject mouth;
     [SerializeField] private Rigidbody _rigidbody;
@@ -72,18 +73,30 @@ public class FrogTongue : MonoBehaviour
 
         float swingDistance = (frog.transform.position - transform.position).magnitude;
 
-        springJoint.maxDistance = swingDistance * 0.8f;
+        springJoint.maxDistance = swingDistance * 0.95f;
         springJoint.minDistance = swingDistance * 0.25f;
+
+        springJoint.spring = playerController.spring;
+        springJoint.damper = playerController.damper;
+        springJoint.massScale = playerController.massScale;
 
         _lineRenderer.colorGradient = _swingingGrad;
     }
 
-    public void StopSwinging()
+    public bool StopSwinging()
     {
-        Destroy(springJoint);
-        springJoint = null;
         if (gameObject.activeSelf) _isRetracting = true;
         _lineRenderer.colorGradient = _outGrad;
+        if (springJoint != null)
+        {
+            Destroy(springJoint);
+            springJoint = null;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     void LateUpdate()

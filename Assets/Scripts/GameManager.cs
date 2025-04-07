@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         _timer.SetActive(false);
         _finishScreen.SetActive(true);
-        _finishScreen.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = "Time: " + _timerText.GetTimerString();
+        _finishScreen.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = "Time: " + _timerText.elapsedTime;
         _finishScreen.transform.GetChild(1).GetComponent<Button>().Select();
 
         int levelUnlocked = GetLevelIndex() + 1;

@@ -3775,11 +3775,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71d38c8e7f354894aa6c558d985066ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 1803006630}
   frog: {fileID: 1733641502}
   mouth: {fileID: 200670150}
   _rigidbody: {fileID: 0}
   _lineRenderer: {fileID: 1080076570}
-  _speedMult: 50
+  _speedMult: 75
   maxRange: 30
   _distanceFromPlayer: 0
   _isRetracting: 0
@@ -6051,6 +6052,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      propertyPath: damper
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      propertyPath: spring
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: tongue
       value: 
       objectReference: {fileID: 200670150}
@@ -6071,6 +6080,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      propertyPath: massScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: _rigidbody
       value: 
       objectReference: {fileID: 1803006633}
@@ -6082,6 +6099,10 @@ PrefabInstance:
       propertyPath: _playerInput
       value: 
       objectReference: {fileID: 1803006632}
+    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      propertyPath: _releaseForceMult
+      value: 13.3
+      objectReference: {fileID: 0}
     - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: _cinemachineCamera
       value: 
