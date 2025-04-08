@@ -23,7 +23,7 @@ public class HomeMenu : MonoBehaviour
         public ButtonCollection buttonCollection;
         public int ShowPosY;
         public int RestPosY;
-        public Button firstButton;
+        public Selectable firstButton;
     }
 
     public void LoadScreen(int partOfScreen, int requestedScreen)

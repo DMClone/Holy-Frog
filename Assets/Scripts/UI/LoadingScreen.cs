@@ -5,6 +5,7 @@ public class LoadingScreen : MonoBehaviour
 {
     public static LoadingScreen instance;
     private GameObject _screen;
+    [SerializeField] private RectTransform _crosshair;
     private Image _image;
 
     [Range(0, 5)][SerializeField] private float _fadeSpeed;
@@ -47,4 +48,20 @@ public class LoadingScreen : MonoBehaviour
         else if (_image.color.a < 0)
             _image.color = new Color(0, 0, 0, 0);
     }
+
+    public void UpdateCrosshairSize(float scale)
+    {
+        _crosshair.localScale = new Vector3(scale, scale, scale);
+    }
+
+    public void ShowCrosshair()
+    {
+        _crosshair.gameObject.SetActive(true);
+    }
+
+    public void HideCrosshair()
+    {
+        _crosshair.gameObject.SetActive(false);
+    }
+
 }

@@ -27,7 +27,7 @@ public class FrogTongue : MonoBehaviour
 
     public void OnReset()
     {
-        PlayerController.instance.canAttack = true;
+        playerController.canAttack = true;
         transform.localPosition = Vector3.zero;
         StopSwinging();
         _isRetracting = false;
@@ -66,6 +66,8 @@ public class FrogTongue : MonoBehaviour
 
     void StartSwinging()
     {
+        playerController.canJump = false;
+        playerController.swinging = true;
         _rigidbody.linearVelocity = Vector3.zero;
         springJoint = frog.AddComponent<SpringJoint>();
         springJoint.autoConfigureConnectedAnchor = false;
@@ -83,8 +85,10 @@ public class FrogTongue : MonoBehaviour
         _lineRenderer.colorGradient = _swingingGrad;
     }
 
+    // bool returns true if we were swinging
     public bool StopSwinging()
     {
+        playerController.swinging = false;
         if (gameObject.activeSelf) _isRetracting = true;
         _lineRenderer.colorGradient = _outGrad;
         if (springJoint != null)
@@ -94,9 +98,8 @@ public class FrogTongue : MonoBehaviour
             return true;
         }
         else
-        {
             return false;
-        }
+
     }
 
     void LateUpdate()

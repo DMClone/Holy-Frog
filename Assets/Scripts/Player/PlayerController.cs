@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject _cinemachineCamera;
+    [SerializeField] private GameObject _crosshair;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Animator _animator;
@@ -27,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
-    private bool _canJump = true;
+    [HideInInspector] public bool canJump = true;
     private bool _isJumpCancelled;
     private bool _isGrounded = true;
     private float _jumpCharge;
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
 
     // Attack
     public bool canAttack = true;
+    public bool swinging;
 
     [Header("Jump settings")]
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
@@ -91,6 +93,7 @@ public class PlayerController : MonoBehaviour
         playerRestart.performed += Restart;
         _camera.SetActive(true);
         _cinemachineCamera.SetActive(true);
+        _crosshair.SetActive(true);
     }
 
     void OnDisable()
@@ -110,6 +113,7 @@ public class PlayerController : MonoBehaviour
         InputAction playerRestart = InputSystem.actions.FindAction("Restart");
         playerRestart.performed -= Restart;
         _cinemachineCamera.SetActive(false);
+        _crosshair.SetActive(false);
     }
 
     public void DisabeCamera()
@@ -125,6 +129,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnReset()
     {
+        _frogTongue.OnReset();
         _rigidbody.isKinematic = false;
         _rigidbody.interpolation = RigidbodyInterpolation.None;
         transform.position = gameManager.start.position + new Vector3(0, 0.3f, 0);
@@ -132,16 +137,16 @@ public class PlayerController : MonoBehaviour
         transform.eulerAngles = new Vector3(0, gameManager.startRotation, 0);
         _rigidbody.MoveRotation(Quaternion.Euler(0, gameManager.startRotation, 0));
         _jumpCharge = 0;
-        _canJump = true;
+        canJump = true;
         _isGrounded = true;
         _jumpToken = false;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().HorizontalAxis.Value = transform.eulerAngles.y;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().VerticalAxis.Value = 10;
-        _rigidbody.linearVelocity = Vector3.zero;
         _cinemachineCamera.GetComponent<CinemachineInputAxisController>();
-        _frogTongue.OnReset();
         _animator.Play("Idle", 0, 0);
         _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.Sleep();
     }
     #endregion
 
@@ -170,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
     private void InputJump(InputAction.CallbackContext context) // Released jump button when charging jump
     {
-        if (_canJump && _isJumpCancelled == false && !gameManager.isGamePaused && !_jumpToken)
+        if (canJump && _isJumpCancelled == false && !gameManager.isGamePaused && !_jumpToken)
         {
             Jump(true);
         }
@@ -189,9 +194,9 @@ public class PlayerController : MonoBehaviour
 
     private void Jump(bool input)
     {
-        if (_canJump)
+        if (canJump && !swinging)
         {
-            _canJump = false;
+            canJump = false;
             StartCoroutine(GroundUpdate());
             lookDir = (transform.position - new Vector3(_cinemachineCamera.transform.position.x, transform.position.y, _cinemachineCamera.transform.position.z)).normalized;
 
@@ -292,7 +297,7 @@ public class PlayerController : MonoBehaviour
 
     private void Land()
     {
-        _canJump = true;
+        canJump = true;
         if (InputSystem.actions.FindAction("Grip").phase != InputActionPhase.Waiting)
             _rigidbody.linearVelocity = Vector3.zero;
         else
@@ -326,8 +331,7 @@ public class PlayerController : MonoBehaviour
     {
         RaycastHit hit;
 
-        // Adjust the camera's forward direction to aim slightly above
-        Vector3 adjustedForward = _camera.transform.forward + new Vector3(0, 0.25f, 0); // Added upward offset
+        Vector3 adjustedForward = _camera.transform.forward + new Vector3(0, 0.35f, 0);
 
         if (Physics.Raycast(_camera.transform.position, adjustedForward, out hit, _frogTongue.maxRange + 10, ~(1 << 7)))
             point = hit.point;
