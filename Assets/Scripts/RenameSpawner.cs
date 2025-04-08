@@ -13,8 +13,8 @@ public class RenameSpawner : MonoBehaviour
 
     void OnEnable()
     {
-        if (_entitySpawner._gameObjectToSpawn != false)
-            gameObject.name = _entitySpawner._gameObjectToSpawn.name + " Spawner";
+        if (_entitySpawner.child != false)
+            gameObject.name = _entitySpawner.child.name + " Spawner";
         else
             gameObject.name = "Empty Spawner";
     }

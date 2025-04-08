@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class EntitySpawner : MonoBehaviour
 {
-    public GameObject _gameObjectToSpawn;
-    private GameObject _child;
+    public GameObject child;
+    [SerializeField] public ISpawnable spawnable;
     private void Awake()
     {
+        ISpawnable[] scripts = child.GetComponents<ISpawnable>();
+        Debug.Log(scripts.Length);
         GameManager.instance.ue_sceneReset.AddListener(OnReset);
         OnReset();
     }
 
     private void OnReset()
     {
-        if (_child != null)
-            Destroy(_child);
-        _child = Instantiate(_gameObjectToSpawn, transform.position, transform.rotation);
+        spawnable.OnReset();
     }
 
     void OnDrawGizmosSelected()
