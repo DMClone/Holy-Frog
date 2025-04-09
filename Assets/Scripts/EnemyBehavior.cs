@@ -2,20 +2,18 @@ using UnityEngine;
 
 public class EnemyBehavior : MonoBehaviour, ISpawnable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    protected Health _health;
 
+    protected virtual void Awake()
+    {
+        _health = GetComponent<Health>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public virtual void OnReset()
     {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
 
-    }
-
-    public void OnReset()
-    {
-        Debug.Log("Enemy reset");
+        _health.OnReset();
     }
 }

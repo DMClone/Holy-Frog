@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _lastVelocity;
     [HideInInspector] public bool canJump = true;
     private bool _isJumpCancelled;
-    private bool _isGrounded = true;
+    [HideInInspector] public bool isGrounded = true;
     private float _jumpCharge;
 
     // float and bool for storing jump data if we jumped some frames before we land
@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody.MoveRotation(Quaternion.Euler(0, gameManager.startRotation, 0));
         _jumpCharge = 0;
         canJump = true;
-        _isGrounded = true;
+        isGrounded = true;
         _jumpToken = false;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().HorizontalAxis.Value = transform.eulerAngles.y;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().VerticalAxis.Value = 10;
@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour
 
     private void GripOnGround(InputAction.CallbackContext context)
     {
-        if (_isGrounded && _rigidbody.linearVelocity != Vector3.zero)
+        if (isGrounded && _rigidbody.linearVelocity != Vector3.zero)
             _rigidbody.linearVelocity = Vector3.zero;
     }
 
@@ -183,7 +183,7 @@ public class PlayerController : MonoBehaviour
         {
             _lastCharge = _jumpCharge;
             _jumpCharge = 0;
-            if (!_isGrounded)
+            if (!isGrounded)
             {
                 if (_leniencyCoroutine != null)
                     StopCoroutine(_leniencyCoroutine);
@@ -194,7 +194,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump(bool input)
     {
-        if (canJump && !swinging)
+        if (canJump)
         {
             canJump = false;
             StartCoroutine(GroundUpdate());
@@ -223,7 +223,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator GroundUpdate()
     {
         yield return new WaitForFixedUpdate();
-        _isGrounded = false;
+        isGrounded = false;
     }
 
     private IEnumerator LeniencyJump()
@@ -264,7 +264,7 @@ public class PlayerController : MonoBehaviour
 
         GroundCheck();
 
-        if (!_isGrounded)
+        if (!isGrounded)
             _rigidbody.AddForce(Vector3.down * 30);
     }
 
@@ -288,16 +288,17 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (foundGround != _isGrounded)
+        if (foundGround != isGrounded)
         {
-            _isGrounded = foundGround;
-            if (_isGrounded) Land();
+            isGrounded = foundGround;
+            if (isGrounded) Land();
         }
     }
 
     private void Land()
     {
-        canJump = true;
+        if (!swinging) canJump = true;
+
         if (InputSystem.actions.FindAction("Grip").phase != InputActionPhase.Waiting)
             _rigidbody.linearVelocity = Vector3.zero;
         else

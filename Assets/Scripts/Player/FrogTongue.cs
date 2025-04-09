@@ -89,6 +89,7 @@ public class FrogTongue : MonoBehaviour
     public bool StopSwinging()
     {
         playerController.swinging = false;
+        if (playerController.isGrounded) playerController.canJump = true;
         if (gameObject.activeSelf) _isRetracting = true;
         _lineRenderer.colorGradient = _outGrad;
         if (springJoint != null)
