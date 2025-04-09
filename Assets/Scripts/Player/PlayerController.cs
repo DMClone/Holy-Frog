@@ -330,6 +330,9 @@ public class PlayerController : MonoBehaviour
 
     private void ShootTongue(InputAction.CallbackContext context)
     {
+        if (gameManager.isGamePaused) return;
+
+
         RaycastHit hit;
 
         Vector3 adjustedForward = _camera.transform.forward + new Vector3(0, 0.35f, 0);

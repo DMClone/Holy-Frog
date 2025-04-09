@@ -13,6 +13,5 @@ public class Health : MonoBehaviour
     public void OnReset()
     {
         _HP = _maxHP;
-        transform.localPosition = Vector3.zero;
     }
 }

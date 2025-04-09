@@ -15,13 +15,16 @@ public class Ant : EnemyBehavior
         _playerController = PlayerController.instance;
         _gameManager = GameManager.instance;
         _navMeshAgent = GetComponent<NavMeshAgent>();
+
+        _gameManager.ue_sceneReset.AddListener(OnReset);
     }
 
     public override void OnReset()
     {
         base.OnReset();
-        _navMeshAgent.ResetPath();
         _navMeshAgent.velocity = Vector3.zero;
+        transform.localPosition = Vector3.zero;
+        _navMeshAgent.ResetPath();
         _lastPlayerPos = Vector3.positiveInfinity;
     }
 
