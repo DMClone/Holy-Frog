@@ -2332,7 +2332,7 @@ MonoBehaviour:
   _canvas: {fileID: 0}
   _playerController: {fileID: 1803006630}
   levelsUnlocked: 1
-  _maxLevels: 6
+  _maxLevels: 7
   _levelTransitionDelay: 1
 --- !u!114 &415696646
 MonoBehaviour:
