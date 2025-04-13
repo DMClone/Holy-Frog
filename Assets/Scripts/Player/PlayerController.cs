@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
         _frogTongue.OnReset();
         _rigidbody.isKinematic = false;
         _rigidbody.interpolation = RigidbodyInterpolation.None;
-        transform.position = gameManager.start.position + new Vector3(0, 0.3f, 0);
+        transform.position = gameManager.start.position + new Vector3(0, 0.25f, 0);
         _rigidbody.MovePosition(gameManager.start.position + new Vector3(0, 0.3f, 0));
         transform.eulerAngles = new Vector3(0, gameManager.startRotation, 0);
         _rigidbody.MoveRotation(Quaternion.Euler(0, gameManager.startRotation, 0));
