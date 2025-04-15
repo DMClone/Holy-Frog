@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ButtonCollection : MonoBehaviour
 {
-    public List<Button> buttons;
+    public List<Selectable> buttons;
 
     public void InteractableToggle()
     {

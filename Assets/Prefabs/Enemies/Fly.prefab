@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3449196881006683141}
-  - component: {fileID: 5374032617797537991}
   - component: {fileID: 3800153672814360831}
   - component: {fileID: 8517046728833793974}
   - component: {fileID: 3835326584813317741}
@@ -36,27 +35,6 @@ Transform:
   - {fileID: 665564594254311540}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &5374032617797537991
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6996884355582180753}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &3800153672814360831
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -90,7 +68,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 600df6cdf08e80946b351abb51c8976b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 0.2
+  _touchRadius: 1.35
+  _speed: 0.25
   _snapDistance: 0.25
 --- !u!114 &3835326584813317741
 MonoBehaviour:

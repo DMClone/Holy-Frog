@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyBehavior : MonoBehaviour, ISpawnable
 {
     protected GameManager _gameManager;
-    protected Transform _playerTrans;
+    protected Transform _playerTransform;
     protected Health _health;
     protected Vector3 _startPos;
 
@@ -11,9 +11,8 @@ public class EnemyBehavior : MonoBehaviour, ISpawnable
     {
         _gameManager = GameManager.instance;
         _health = GetComponent<Health>();
-        _playerTrans = PlayerController.instance.transform;
+        _playerTransform = PlayerController.instance.transform;
         _startPos = transform.position;
-        Debug.Log(_startPos);
 
         GameManager.instance.ue_sceneReset.AddListener(OnReset);
     }
@@ -25,7 +24,6 @@ public class EnemyBehavior : MonoBehaviour, ISpawnable
 
         transform.position = _startPos;
         _health.OnReset();
-        Debug.Log("Did EB");
     }
 
     protected void TouchedPlayer()

@@ -2671,7 +2671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e90df586fc3cbc4491d434c4c3a8b63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nextLevel: 0
+  _nextLevel: 5
 --- !u!114 &1757179173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2711,14 +2711,14 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1757179174}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1757179172}
         m_TargetAssemblyTypeName: InLevelButton, Assembly-CSharp
-        m_MethodName: PauseToggle
+        m_MethodName: RequestToLoadLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

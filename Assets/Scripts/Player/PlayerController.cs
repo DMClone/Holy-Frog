@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject _cinemachineCamera;
-    [SerializeField] private GameObject _crosshair;
+    [SerializeField] private LoadingScreen _loadingScreen;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Animator _animator;
@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
         playerRestart.performed += Restart;
         _camera.SetActive(true);
         _cinemachineCamera.SetActive(true);
-        _crosshair.SetActive(true);
+        _loadingScreen.ShowCrosshair();
     }
 
     void OnDisable()
@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
         InputAction playerRestart = InputSystem.actions.FindAction("Restart");
         playerRestart.performed -= Restart;
         _cinemachineCamera.SetActive(false);
-        _crosshair.SetActive(false);
+        _loadingScreen.HideCrosshair();
     }
 
     public void DisabeCamera()
@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.Sleep();
+        _loadingScreen.crosshairFill.fillAmount = 0;
     }
     #endregion
 
@@ -249,6 +250,7 @@ public class PlayerController : MonoBehaviour
             _jumpCharge += 1 * Time.deltaTime;
             if (_jumpCharge > 1) _jumpCharge = 1;
         }
+        _loadingScreen.crosshairFill.fillAmount = _jumpCharge;
     }
 
     void FixedUpdate()

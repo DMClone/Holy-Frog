@@ -17,12 +17,13 @@ public class FrogTongue : MonoBehaviour
     [SerializeField] private Gradient _outGrad, _swingingGrad;
 
     private Vector3 swingPoint;
-    private SpringJoint springJoint;
+    private SpringJoint _springJoint;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         GameManager.instance.ue_sceneReset.AddListener(OnReset);
+        _springJoint = frog.GetComponent<SpringJoint>();
     }
 
     public void OnReset()
@@ -69,18 +70,14 @@ public class FrogTongue : MonoBehaviour
         playerController.canJump = false;
         playerController.swinging = true;
         _rigidbody.linearVelocity = Vector3.zero;
-        springJoint = frog.AddComponent<SpringJoint>();
-        springJoint.autoConfigureConnectedAnchor = false;
-        springJoint.connectedAnchor = transform.position;
+
+        _springJoint.connectedAnchor = transform.position;
 
         float swingDistance = (frog.transform.position - transform.position).magnitude;
 
-        springJoint.maxDistance = swingDistance * 0.95f;
-        springJoint.minDistance = swingDistance * 0.25f;
-
-        springJoint.spring = playerController.spring;
-        springJoint.damper = playerController.damper;
-        springJoint.massScale = playerController.massScale;
+        _springJoint.maxDistance = swingDistance * 0.95f;
+        _springJoint.minDistance = swingDistance * 0.25f;
+        _springJoint.massScale = 1;
 
         _lineRenderer.colorGradient = _swingingGrad;
     }
@@ -88,14 +85,13 @@ public class FrogTongue : MonoBehaviour
     // bool returns true if we were swinging
     public bool StopSwinging()
     {
-        playerController.swinging = false;
         if (playerController.isGrounded) playerController.canJump = true;
         if (gameObject.activeSelf) _isRetracting = true;
         _lineRenderer.colorGradient = _outGrad;
-        if (springJoint != null)
+        if (playerController.swinging)
         {
-            Destroy(springJoint);
-            springJoint = null;
+            playerController.swinging = false;
+            _springJoint.massScale = 0;
             return true;
         }
         else

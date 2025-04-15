@@ -6,6 +6,8 @@ public class LoadingScreen : MonoBehaviour
     public static LoadingScreen instance;
     private GameObject _screen;
     [SerializeField] private RectTransform _crosshair;
+    public Image crosshairFill;
+
     private Image _image;
 
     [Range(0, 5)][SerializeField] private float _fadeSpeed;
