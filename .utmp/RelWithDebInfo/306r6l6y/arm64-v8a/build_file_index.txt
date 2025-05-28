@@ -1,0 +1,2 @@
+C:\Users\daniv\Documents\GitHub\GLU\Year2\Holy-Frog\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+C:\Users\daniv\Documents\GitHub\GLU\Year2\Holy-Frog\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
