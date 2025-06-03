@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private LoadingScreen _loadingScreen;
     [SerializeField] private GameObject _canvas;
-    [SerializeField] private PlayerController _playerController;
+    private PlayerController _playerController;
 
     public int levelsUnlocked;
     [SerializeField] private int _maxLevels;
@@ -39,6 +39,11 @@ public class LevelManager : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        Debug.Log(Time.timeScale);
+    }
+
     private void Start()
     {
         _loadingScreen = LoadingScreen.instance;
@@ -53,7 +58,6 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel(int level)
     {
         string path = "Scenes/Levels/Level" + level;
-        _playerController.enabled = false;
         StartCoroutine(SceneLoad(path, false));
     }
 
@@ -77,15 +81,22 @@ public class LevelManager : MonoBehaviour
         {
             yield return null;
             if (!isHome)
-                _playerController.enabled = true;
+                LevelLoaded();
             else
             {
-                _playerController.DisabeCamera();
                 Time.timeScale = 1;
             }
             GetCanvas();
             _loadingScreen.FadeOut();
         }
+    }
+
+    private void LevelLoaded()
+    {
+        _playerController = PlayerController.instance;
+
+        if (uesceneReset != null)
+            uesceneReset.Invoke();
     }
 
     public void ToHome()

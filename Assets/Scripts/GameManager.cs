@@ -15,19 +15,20 @@ public enum PauseSetting
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    [Header("Dependencies")]
+    [SerializeField] private GameObject _pauseScreen;
+    [SerializeField] private GameObject _finishScreen;
+    [SerializeField] private GameObject _timer;
     [SerializeField] private Timer _timerText;
+    public Transform start;
+
+    [Header("Settings")]
+    [HideInInspector] public bool isGamePaused = true;
+    [Tooltip("Will start indication 10 units up")] public int killDepth;
+    public float startRotation;
+    private bool _isNewRun = true;
 
     [HideInInspector] public UnityEvent ue_sceneReset;
-
-    private GameObject _pauseScreen;
-    private GameObject _finishScreen;
-    private GameObject _timer;
-
-    [HideInInspector] public bool isGamePaused = true;
-    private bool _isNewRun = true;
-    public Transform start;
-    public float startRotation;
-    [Tooltip("Will start indication 10 units up")] public int killDepth;
 
     private void Awake()
     {
@@ -35,7 +36,6 @@ public class GameManager : MonoBehaviour
             instance = this;
         _timerText = GetComponent<Timer>();
         HideCursor();
-        Time.timeScale = 0;
     }
 
     void Start()
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         _timer = canvas.transform.GetChild(2).gameObject;
 
         PlayerController.instance.gameManager = this;
-        PlayerController.instance.GameManagerHook();
+        Time.timeScale = 0;
     }
 
     public void PauseToggle(PauseSetting pauseGame, bool enableRestartButton)

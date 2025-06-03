@@ -18,13 +18,13 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject _cinemachineCamera;
-    [SerializeField] private LoadingScreen _loadingScreen;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Animator _animator;
     [SerializeField] private BoxCollider _boxCollider;
     [SerializeField] private FrogTongue _frogTongue;
     [HideInInspector] public GameManager gameManager;
+    private LoadingScreen _loadingScreen;
 
     private Vector3 lookDir;
     private Vector3 _lastVelocity;
@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
     private bool _isJumpCancelled;
     [HideInInspector] public bool isGrounded = true;
     private float _jumpCharge;
+    private Vector3 _startPos;
+    private Vector3 _startRotation;
 
     // float and bool for storing jump data if we jumped some frames before we land
     private Coroutine _leniencyCoroutine;
@@ -50,11 +52,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField][Range(0, 200)] private int _jumpForce;
     [SerializeField][Range(0, 0.1f)] private float _leniencyJumpDuration;
 
-    [Header("Joint settings")]
-    [Range(0, 200)] public int spring;
-    [Range(0, 200)] public int damper;
-    [Range(0, 200)] public int massScale;
-
     [Header("Tongue settings")]
     [SerializeField][Range(0, 20)] private float _releaseForceMult;
 
@@ -69,10 +66,16 @@ public class PlayerController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        gameManager = GameManager.instance;
+        _loadingScreen = LoadingScreen.instance;
+        _startPos = _rigidbody.position;
+        _startRotation = _rigidbody.rotation.eulerAngles;
+    }
 
-        DontDestroyOnLoad(gameObject);
-
-        _camera.SetActive(false);
+    private void Start()
+    {
+        GameManager.instance.ue_sceneReset.AddListener(OnReset);
+        OnReset();
     }
 
     void OnEnable()
@@ -116,33 +119,20 @@ public class PlayerController : MonoBehaviour
         _loadingScreen.HideCrosshair();
     }
 
-    public void DisabeCamera()
-    {
-        _camera.SetActive(false);
-    }
-
-    public void GameManagerHook()
-    {
-        gameManager.ue_sceneReset.AddListener(OnReset);
-        OnReset();
-    }
-
     private void OnReset()
     {
         _frogTongue.OnReset();
         _rigidbody.isKinematic = false;
         _rigidbody.interpolation = RigidbodyInterpolation.None;
-        transform.position = gameManager.start.position + new Vector3(0, 0.25f, 0);
-        _rigidbody.MovePosition(gameManager.start.position + new Vector3(0, 0.3f, 0));
-        transform.eulerAngles = new Vector3(0, gameManager.startRotation, 0);
-        _rigidbody.MoveRotation(Quaternion.Euler(0, gameManager.startRotation, 0));
+        transform.position = _startPos;
+        transform.rotation = Quaternion.Euler(_startRotation);
         _jumpCharge = 0;
         canJump = true;
         isGrounded = true;
         _jumpToken = false;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().HorizontalAxis.Value = transform.eulerAngles.y;
         _cinemachineCamera.GetComponent<CinemachineOrbitalFollow>().VerticalAxis.Value = 10;
-        _cinemachineCamera.GetComponent<CinemachineInputAxisController>();
+        // _cinemachineCamera.GetComponent<CinemachineInputAxisController>();
         _animator.Play("Idle", 0, 0);
         _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         _rigidbody.linearVelocity = Vector3.zero;
