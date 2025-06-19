@@ -39,11 +39,6 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        Debug.Log(Time.timeScale);
-    }
-
     private void Start()
     {
         _loadingScreen = LoadingScreen.instance;

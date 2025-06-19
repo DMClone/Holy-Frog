@@ -7,7 +7,7 @@ public class EnemyBehavior : MonoBehaviour, ISpawnable
     protected Health _health;
     protected Vector3 _startPos;
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         _gameManager = GameManager.instance;
         _health = GetComponent<Health>();

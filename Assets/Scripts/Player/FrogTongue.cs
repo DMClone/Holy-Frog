@@ -1,15 +1,17 @@
 using UnityEngine;
 
 // Rope swinging/grappling hook courtesy of "Dave/GameDevelopment": https://youtu.be/HPjuTK91MA8?si=USOfgZWOexhI0f0U
-// No github was provided so video link will have to do
 public class FrogTongue : MonoBehaviour
 {
-    public PlayerController playerController;
-    public GameObject frog;
-    public GameObject mouth;
+    [Header("Dependencies")]
+    [SerializeField] private PlayerController _playerController;
+    [SerializeField] private GameObject _frog;
+    [SerializeField] private GameObject _mouth;
+    [SerializeField] private SpringJoint _springJoint;
     [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private LineRenderer _lineRenderer;
 
+    [Header("Settings")]
     [Range(1, 100)][SerializeField] private int _speedMult;
     public float maxRange;
     [SerializeField] private float _distanceFromPlayer;
@@ -17,19 +19,15 @@ public class FrogTongue : MonoBehaviour
     [SerializeField] private Gradient _outGrad, _swingingGrad;
 
     private Vector3 swingPoint;
-    private SpringJoint _springJoint;
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
         GameManager.instance.ue_sceneReset.AddListener(OnReset);
-        _springJoint = frog.GetComponent<SpringJoint>();
     }
 
     public void OnReset()
     {
-        playerController.canAttack = true;
-        transform.localPosition = Vector3.zero;
+        _playerController.canAttack = true;
         StopSwinging();
         _isRetracting = false;
         gameObject.SetActive(false);
@@ -37,13 +35,14 @@ public class FrogTongue : MonoBehaviour
 
     public void SetTarget(Vector3 target)
     {
+        transform.position = _mouth.transform.position;
         _rigidbody.linearVelocity = -(transform.position - target).normalized * _speedMult;
         _lineRenderer.colorGradient = _outGrad;
     }
 
     void FixedUpdate()
     {
-        Vector3 toPlayer = transform.position - mouth.transform.position;
+        Vector3 toPlayer = transform.position - _mouth.transform.position;
         _distanceFromPlayer = toPlayer.magnitude;
 
         if (_isRetracting && _distanceFromPlayer <= 1)
@@ -52,7 +51,7 @@ public class FrogTongue : MonoBehaviour
             return;
         }
 
-        if (_distanceFromPlayer >= maxRange)
+        if (!_playerController.isSwinging && _distanceFromPlayer >= maxRange)
             _isRetracting = true;
 
         if (_isRetracting)
@@ -67,13 +66,13 @@ public class FrogTongue : MonoBehaviour
 
     void StartSwinging()
     {
-        playerController.canJump = false;
-        playerController.swinging = true;
+        _playerController.canJump = false;
+        _playerController.isSwinging = true;
         _rigidbody.linearVelocity = Vector3.zero;
 
         _springJoint.connectedAnchor = transform.position;
 
-        float swingDistance = (frog.transform.position - transform.position).magnitude;
+        float swingDistance = (_frog.transform.position - transform.position).magnitude;
 
         _springJoint.maxDistance = swingDistance * 0.95f;
         _springJoint.minDistance = swingDistance * 0.25f;
@@ -85,12 +84,12 @@ public class FrogTongue : MonoBehaviour
     // bool returns true if we were swinging
     public bool StopSwinging()
     {
-        if (playerController.isGrounded) playerController.canJump = true;
+        if (_playerController.isGrounded) _playerController.canJump = true;
         if (gameObject.activeSelf) _isRetracting = true;
         _lineRenderer.colorGradient = _outGrad;
-        if (playerController.swinging)
+        if (_playerController.isSwinging)
         {
-            playerController.swinging = false;
+            _playerController.isSwinging = false;
             _springJoint.massScale = 0;
             return true;
         }
@@ -102,6 +101,6 @@ public class FrogTongue : MonoBehaviour
     void LateUpdate()
     {
         _lineRenderer.SetPosition(0, transform.position);
-        _lineRenderer.SetPosition(1, mouth.transform.position);
+        _lineRenderer.SetPosition(1, _mouth.transform.position);
     }
 }

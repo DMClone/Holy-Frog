@@ -20,13 +20,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _finishScreen;
     [SerializeField] private GameObject _timer;
     [SerializeField] private Timer _timerText;
-    public Transform start;
 
     [Header("Settings")]
-    [HideInInspector] public bool isGamePaused = true;
     [Tooltip("Will start indication 10 units up")] public int killDepth;
     public float startRotation;
     private bool _isNewRun = true;
+    [HideInInspector] public bool isGamePaused = true;
 
     [HideInInspector] public UnityEvent ue_sceneReset;
 

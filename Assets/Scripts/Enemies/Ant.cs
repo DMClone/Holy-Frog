@@ -3,16 +3,12 @@ using UnityEngine.AI;
 
 public class Ant : Mite
 {
+    [Header("Settings")]
     [Tooltip("Distance before needing to stop")][SerializeField][Range(0, 50)] private int _stopDistance;
     [Tooltip("Distance before needing to back up")][SerializeField][Range(0, 50)] private int _backupDistance;
     public float _distance;
     protected override void FixedUpdate()
     {
-
-
-
-
-
         float distance = GetDistanceToPlayer();
         _distance = distance;
 

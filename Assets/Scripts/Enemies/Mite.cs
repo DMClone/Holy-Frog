@@ -4,12 +4,23 @@ using UnityEngine.AI;
 
 public class Mite : EnemyBehavior
 {
+    protected enum MiteAnimationState
+    {
+        Idle,
+        Run,
+        Attack,
+        Death
+    }
+
+    [Header("Dependencies")]
+    [SerializeField] protected Animator _animator;
+    [SerializeField][ReadOnly] protected MiteAnimationState _animationState;
     protected NavMeshAgent _navMeshAgent;
     protected Vector3 _lastPlayerPos;
 
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
+        base.Start();
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
@@ -41,12 +52,21 @@ public class Mite : EnemyBehavior
         {
             _navMeshAgent.SetPath(newPath);
             _lastPlayerPos = _playerTransform.position;
+            if (_animationState != MiteAnimationState.Run)
+            {
+                _animator.SetTrigger("Run");
+                _animationState = MiteAnimationState.Run;
+            }
         }
         else
         {
             _navMeshAgent.ResetPath();
             _navMeshAgent.velocity = Vector3.zero;
-
+            if (_animationState != MiteAnimationState.Idle)
+            {
+                _animator.SetTrigger("Idle");
+                _animationState = MiteAnimationState.Idle;
+            }
         }
     }
 

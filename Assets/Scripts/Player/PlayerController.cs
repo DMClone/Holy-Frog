@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
 
     // Attack
     public bool canAttack = true;
-    public bool swinging;
+    public bool isSwinging;
 
     [Header("Jump settings")]
     [Tooltip("Percentage of jump height added on start")][SerializeField][Range(0, 1)] private float _startingHeight;
@@ -289,7 +289,7 @@ public class PlayerController : MonoBehaviour
 
     private void Land()
     {
-        if (!swinging) canJump = true;
+        if (!isSwinging) canJump = true;
 
         if (InputSystem.actions.FindAction("Grip").phase != InputActionPhase.Waiting)
             _rigidbody.linearVelocity = Vector3.zero;
@@ -311,14 +311,6 @@ public class PlayerController : MonoBehaviour
 
 
     Vector3 point = new Vector3();
-
-    #region DELETEONPROJECTEND
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawCube(_boxCollider.bounds.center - new Vector3(0, 0.2f, 0), _boxCollider.bounds.size);
-        Gizmos.DrawCube(point, new Vector3(2, 2, 2));
-    }
-    #endregion
 
     private void ShootTongue(InputAction.CallbackContext context)
     {
