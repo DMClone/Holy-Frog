@@ -268,6 +268,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8746580234680456734, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
   m_PrefabInstance: {fileID: 353734555}
   m_PrefabAsset: {fileID: 0}
+--- !u!145 &353734559 stripped
+SpringJoint:
+  m_CorrespondingSourceObject: {fileID: -5441235212210601712, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 353734555}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &373842128
 GameObject:
   m_ObjectHideFlags: 0
@@ -2639,6 +2644,10 @@ PrefabInstance:
       propertyPath: _mouth
       value: 
       objectReference: {fileID: 353734556}
+    - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: _springJoint
+      value: 
+      objectReference: {fileID: 353734559}
     - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
       propertyPath: _playerController
       value: 

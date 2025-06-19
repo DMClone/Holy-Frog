@@ -6,6 +6,13 @@ public class Fly : EnemyBehavior
     [SerializeField][Range(0, 2)] private float _touchRadius;
     [SerializeField][Range(0, 1)] private float _speed;
     [SerializeField][Range(0, 1)] private float _snapDistance;
+    Vector3 toPlayer;
+
+    void Update()
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(-toPlayer);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,7 +28,7 @@ public class Fly : EnemyBehavior
 
     void FixedUpdate()
     {
-        Vector3 toPlayer = (_playerTransform.position - transform.position).normalized;
+        toPlayer = (_playerTransform.position - transform.position).normalized;
         if (_playerFound && Physics.Raycast(transform.position, toPlayer) == _playerTransform.gameObject)
             transform.position += toPlayer * _speed;
         else if (Vector3.Distance(transform.localPosition, _startPos) > _snapDistance)

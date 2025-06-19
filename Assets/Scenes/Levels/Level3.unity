@@ -1105,30 +1105,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2697518931506473274, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2697518931506473274, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: m_ApplyActiveColorSpace
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2697518931506473274, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: m_Parameters.textureMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2697518931506473274, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
-    - target: {fileID: 2697518931506473274, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: m_Parameters.numCapVertices
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2697518931506473274, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: m_Parameters.numCornerVertices
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1177,10 +1153,6 @@ PrefabInstance:
       propertyPath: _mouth
       value: 
       objectReference: {fileID: 1657092234}
-    - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
-      propertyPath: maxRange
-      value: 50
-      objectReference: {fileID: 0}
     - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
       propertyPath: _springJoint
       value: 
@@ -2457,14 +2429,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -5441235212210601712, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: m_Spring
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: -5441235212210601712, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: m_AutoConfigureConnectedAnchor
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6630432445446662823, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4
@@ -2509,14 +2473,6 @@ PrefabInstance:
       propertyPath: _frogTongue
       value: 
       objectReference: {fileID: 724011400}
-    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: _releaseForceMult
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
-      propertyPath: _leniencyJumpDuration
-      value: 0.025
-      objectReference: {fileID: 0}
     - target: {fileID: 8746580234680456734, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: m_Name
       value: Frog

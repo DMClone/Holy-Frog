@@ -13,6 +13,7 @@ public class FrogTongue : MonoBehaviour
 
     [Header("Settings")]
     [Range(1, 100)][SerializeField] private int _speedMult;
+    [SerializeField] private int _spring;
     public float maxRange;
     [SerializeField] private float _distanceFromPlayer;
     [SerializeField] private bool _isRetracting;
@@ -76,7 +77,7 @@ public class FrogTongue : MonoBehaviour
 
         _springJoint.maxDistance = swingDistance * 0.95f;
         _springJoint.minDistance = swingDistance * 0.25f;
-        _springJoint.massScale = 1;
+        _springJoint.spring = _spring;
 
         _lineRenderer.colorGradient = _swingingGrad;
     }
@@ -90,7 +91,7 @@ public class FrogTongue : MonoBehaviour
         if (_playerController.isSwinging)
         {
             _playerController.isSwinging = false;
-            _springJoint.massScale = 0;
+            _springJoint.spring = 0;
             return true;
         }
         else

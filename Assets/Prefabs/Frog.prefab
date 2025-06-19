@@ -507,13 +507,13 @@ MonoBehaviour:
   canJump: 1
   isGrounded: 1
   canAttack: 1
-  swinging: 0
+  isSwinging: 0
   _startingHeight: 0.1
   _startingForce: 0.1
   _jumpHeight: 20
   _jumpForce: 20
-  _leniencyJumpDuration: 0
-  _releaseForceMult: 0
+  _leniencyJumpDuration: 0.025
+  _releaseForceMult: 10
 --- !u!65 &1394432070374589639
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -603,9 +603,9 @@ SpringJoint:
   m_ConnectedBody: {fileID: 0}
   m_ConnectedArticulationBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0, z: 0}
-  m_AutoConfigureConnectedAnchor: 1
+  m_AutoConfigureConnectedAnchor: 0
   m_ConnectedAnchor: {x: 0, y: 0, z: 0}
-  m_Spring: 10
+  m_Spring: 0
   m_Damper: 0.2
   m_MinDistance: 0
   m_MaxDistance: 0
@@ -614,7 +614,7 @@ SpringJoint:
   m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
-  m_MassScale: 0.00001
+  m_MassScale: 1
   m_ConnectedMassScale: 1
 --- !u!1001 &4846110830503869648
 PrefabInstance:

@@ -1628,6 +1628,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+      propertyPath: _frogTongue
+      value: 
+      objectReference: {fileID: 1832211011}
     - target: {fileID: 8746580234680456734, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
       propertyPath: m_Name
       value: Frog
@@ -1637,6 +1641,32 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+--- !u!145 &807948397 stripped
+SpringJoint:
+  m_CorrespondingSourceObject: {fileID: -5441235212210601712, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 807948396}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &807948398 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4898033651210286138, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 807948396}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &807948399 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6673269378863001411, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 807948396}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807948400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce697c94e57d98b44abcaf0561928223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &807948400 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8746580234680456734, guid: a4b4a646cfae7614bbf19ea0f57d1644, type: 3}
+  m_PrefabInstance: {fileID: 807948396}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &821162722
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3459,6 +3489,90 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1001 &1832211010
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805754836040214174, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: _frog
+      value: 
+      objectReference: {fileID: 807948400}
+    - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: _mouth
+      value: 
+      objectReference: {fileID: 807948398}
+    - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: _springJoint
+      value: 
+      objectReference: {fileID: 807948397}
+    - target: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: _playerController
+      value: 
+      objectReference: {fileID: 807948399}
+    - target: {fileID: 4197418832406265524, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+      propertyPath: m_Name
+      value: Tongue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+--- !u!114 &1832211011 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3103469425639198061, guid: 87ecbbd82c2f1fd4aa298775ac38d4a7, type: 3}
+  m_PrefabInstance: {fileID: 1832211010}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d38c8e7f354894aa6c558d985066ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1854206752
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4275,3 +4389,4 @@ SceneRoots:
   - {fileID: 512448610}
   - {fileID: 570231425}
   - {fileID: 807948396}
+  - {fileID: 1832211010}
