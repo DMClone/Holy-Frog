@@ -257,7 +257,7 @@ public class PlayerController : MonoBehaviour
         GroundCheck();
 
         if (!isGrounded)
-            _rigidbody.AddForce(Vector3.down * 30);
+            _rigidbody.AddForce(Vector3.down * Time.fixedDeltaTime * 3000);
     }
 
     private void GroundCheck()

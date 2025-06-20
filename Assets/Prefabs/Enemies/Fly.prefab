@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _touchRadius: 1.35
-  _speed: 0.25
+  _speed: 0.125
   _snapDistance: 0.25
 --- !u!114 &3835326584813317741
 MonoBehaviour:

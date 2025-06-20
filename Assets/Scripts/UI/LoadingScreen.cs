@@ -58,12 +58,14 @@ public class LoadingScreen : MonoBehaviour
 
     public void ShowCrosshair()
     {
-        _crosshair.gameObject.SetActive(true);
+        if (_crosshair != null)
+            _crosshair.gameObject.SetActive(true);
     }
 
     public void HideCrosshair()
     {
-        _crosshair.gameObject.SetActive(false);
+        if (_crosshair != null)
+            _crosshair.gameObject.SetActive(false);
     }
 
 }

@@ -53,8 +53,9 @@ MonoBehaviour:
   _springJoint: {fileID: 0}
   _rigidbody: {fileID: 5163292667330031963}
   _lineRenderer: {fileID: 2697518931506473274}
-  _speedMult: 50
+  _speedMult: 65
   _spring: 40
+  _damper: 20
   maxRange: 50
   _distanceFromPlayer: 0
   _isRetracting: 0
@@ -229,6 +230,15 @@ LineRenderer:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
