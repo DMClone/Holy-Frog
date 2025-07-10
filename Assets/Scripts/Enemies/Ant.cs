@@ -75,14 +75,12 @@ public class Ant : Mite
         Log log = _logs[_currentLog];
 
         _holdingLog = true;
-        log.rb.interpolation = RigidbodyInterpolation.None;
+        log.rb.isKinematic = true;
         log.transform.position = transform.position + Vector3.up * 0.5f;
         log.transform.parent = transform;
-        log.rb.isKinematic = true;
         log.gameObject.SetActive(true);
         _throwStacks = 0;
         yield return new WaitForSeconds(_throwInterval);
-        log.rb.interpolation = RigidbodyInterpolation.Interpolate;
         log.transform.parent = null;
         ThrowLog(log);
         _currentLog++;
@@ -91,9 +89,9 @@ public class Ant : Mite
 
     private void ThrowLog(Log log)
     {
-        log.rb.isKinematic = false;
         Vector3 toPlayer = (new Vector3(_playerTransform.position.x, transform.position.y, _playerTransform.position.z) - transform.position).normalized;
-        log.rb.MoveRotation(Quaternion.LookRotation(toPlayer));
+        log.transform.rotation = Quaternion.LookRotation(toPlayer);
+        log.rb.isKinematic = false;
         log.rb.linearVelocity = (toPlayer * _throwSpeed) + Vector3.up * _throwHeight;
         log.thrown = true;
     }

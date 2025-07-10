@@ -924,8 +924,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 3711250553265190485}
-  _stopDistance: 30
-  _backupDistance: 15
+  _animationState: 0
+  _logs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _stopDistance: 60
+  _backupDistance: 10
+  _throwStacks: 0
+  _maxThrowStacks: 150
+  _throwInterval: 1
+  _throwSpeed: 15
+  _throwHeight: 7
+  _currentLog: 0
+  _holdingLog: 0
   _distance: 0
 --- !u!114 &3641445170596739623
 MonoBehaviour:
