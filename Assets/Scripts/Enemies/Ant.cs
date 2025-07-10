@@ -4,16 +4,25 @@ using UnityEngine.AI;
 
 public class Ant : Mite
 {
-    [Header("Settings")]
+    [Header("Dependencies")]
     [SerializeField] Log[] _logs;
+    [Header("Settings")]
+    [Tooltip("Distance before needing to stop")][SerializeField][Range(0, 100)] private int _stopDistance;
+    [Tooltip("Distance before needing to back up")][SerializeField][Range(0, 100)] private int _backupDistance;
     [SerializeField] private int _throwStacks;
     [SerializeField] private int _maxThrowStacks = 20; // Number of stacks before throwing a log
     [SerializeField] private float _throwInterval = 2f; // Time between holding log and throwing it
+    [SerializeField] private float _throwSpeed = 15f;
+    [SerializeField] private float _throwHeight = 5f;
     [SerializeField][ReadOnly] private int _currentLog;
     [SerializeField][ReadOnly] private bool _holdingLog;
-    [Tooltip("Distance before needing to stop")][SerializeField][Range(0, 50)] private int _stopDistance;
-    [Tooltip("Distance before needing to back up")][SerializeField][Range(0, 50)] private int _backupDistance;
     public float _distance;
+
+    public override void OnReset()
+    {
+        base.OnReset();
+        _throwStacks = _maxThrowStacks / 2;
+    }
 
     protected override void FixedUpdate()
     {
@@ -22,27 +31,36 @@ public class Ant : Mite
 
         if (_backupDistance > distance)
         {
+            Debug.Log("1");
             Vector3 fromPlayer = _playerTransform.position - transform.position;
             _navMeshAgent.SetDestination(transform.position - fromPlayer * 2);
             _navMeshAgent.angularSpeed = 0;
-            _throwStacks = 0;
+            if (_throwStacks != 0) _throwStacks--;
         }
 
         else if (distance > _stopDistance)
         {
+            Debug.Log("2");
             _navMeshAgent.angularSpeed = 360;
             base.FixedUpdate();
-            _throwStacks++;
+            if (!_holdingLog)
+                _throwStacks++;
 
         }
         else if (_navMeshAgent.hasPath)
         {
+            Debug.Log("3");
             _navMeshAgent.ResetPath();
             Debug.Log("Stopped");
-            _throwStacks++;
+            if (!_holdingLog)
+                _throwStacks++;
         }
 
-        if (_throwStacks < _maxThrowStacks)
+        else
+            if (!_holdingLog)
+            _throwStacks++;
+
+        if (_throwStacks >= _maxThrowStacks)
         {
             StartCoroutine(HoldLog());
         }
@@ -50,25 +68,33 @@ public class Ant : Mite
 
     private IEnumerator HoldLog()
     {
-        _holdingLog = true;
-        yield return new WaitForSeconds(_throwInterval);
-        ThrowLog();
-        _holdingLog = false;
-    }
-
-    private void ThrowLog()
-    {
         if (_currentLog >= _logs.Length)
         {
             _currentLog = 0;
         }
-
         Log log = _logs[_currentLog];
-        log.gameObject.SetActive(true);
-        log.transform.position = transform.position + Vector3.up * 0.5f; // Adjust height if needed
-        log.transform.rotation = Quaternion.LookRotation(_playerTransform.position - transform.position);
-        log._rigidbody.linearVelocity = (log.transform.forward * 10f) + Vector3.up * 5f; // Adjust speed and angle as needed
 
+        _holdingLog = true;
+        log.rb.interpolation = RigidbodyInterpolation.None;
+        log.transform.position = transform.position + Vector3.up * 0.5f;
+        log.transform.parent = transform;
+        log.rb.isKinematic = true;
+        log.gameObject.SetActive(true);
+        _throwStacks = 0;
+        yield return new WaitForSeconds(_throwInterval);
+        log.rb.interpolation = RigidbodyInterpolation.Interpolate;
+        log.transform.parent = null;
+        ThrowLog(log);
         _currentLog++;
+        _holdingLog = false;
+    }
+
+    private void ThrowLog(Log log)
+    {
+        log.rb.isKinematic = false;
+        Vector3 toPlayer = (new Vector3(_playerTransform.position.x, transform.position.y, _playerTransform.position.z) - transform.position).normalized;
+        log.rb.MoveRotation(Quaternion.LookRotation(toPlayer));
+        log.rb.linearVelocity = (toPlayer * _throwSpeed) + Vector3.up * _throwHeight;
+        log.thrown = true;
     }
 }

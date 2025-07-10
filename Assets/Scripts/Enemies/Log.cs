@@ -3,49 +3,69 @@ using UnityEngine;
 public class Log : MonoBehaviour
 {
     [Header("Dependencies")]
-    public Rigidbody _rigidbody;
+    public Rigidbody rb;
     private GameManager _gameManager;
     [Header("Settings")]
+    [SerializeField] private Vector3 _startScale;
     [SerializeField] private float _minScale = 0.1f;
     [Tooltip("Time to reach min scale in seconds")][SerializeField] private float _scaleSpeed = 4f;
+    [SerializeField] private float _bounceHeight = 5f;
+    [ReadOnly] public bool thrown;
     private Vector3 _startPos;
     private Vector3 _lastVelocity;
+
+    private void Awake()
+    {
+        transform.localScale = _startScale;
+    }
 
     void Start()
     {
         _gameManager = GameManager.instance;
         _gameManager.ue_sceneReset.AddListener(OnReset);
-        _startPos = transform.position;
+    }
+
+    void OnDisable()
+    {
+        transform.localScale = new Vector3(_startScale.x, _startScale.y, _startScale.z);
+        thrown = false;
+        Debug.Log("Disabled");
     }
 
     public void OnReset()
     {
-        if (!gameObject.activeSelf)
-            gameObject.SetActive(true);
+        if (gameObject.activeSelf)
+            gameObject.SetActive(false);
 
-        transform.position = new Vector3(0, 0, 0);
-        transform.localScale = Vector3.one;
-        _rigidbody.linearVelocity = Vector3.zero;
+        rb.isKinematic = true;
+        transform.localScale = _startScale;
     }
 
     private void FixedUpdate()
     {
-        _lastVelocity = _rigidbody.linearVelocity;
+        if (!thrown) return;
+        _lastVelocity = rb.linearVelocity;
 
-        if (transform.localScale.x > 0.1f)
+        transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, _scaleSpeed * Time.fixedDeltaTime);
+
+        if (transform.localScale.x < _minScale)
         {
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, _scaleSpeed * Time.fixedDeltaTime);
-            if (transform.localScale.x < _minScale)
-            {
-                transform.localScale = new Vector3(_minScale, _minScale, _minScale);
-                gameObject.SetActive(false);
-            }
+            gameObject.SetActive(false);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        _rigidbody.linearVelocity = _lastVelocity;
-        _rigidbody.linearVelocity += Vector3.up * 5f;
+        rb.linearVelocity = new Vector3(_lastVelocity.x, _bounceHeight, _lastVelocity.z);
+
+        if (collision.gameObject.GetComponent<PlayerController>())
+        {
+            TouchedPlayer();
+        }
+    }
+
+    private void TouchedPlayer()
+    {
+        _gameManager.RestartLevel();
     }
 }

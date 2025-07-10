@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
 
     [Header("Settings")]
     [Tooltip("Will start indication 10 units up")] public int killDepth;
-    public float startRotation;
     private bool _isNewRun = true;
     [HideInInspector] public bool isGamePaused = true;
 
